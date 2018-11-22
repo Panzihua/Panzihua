@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Thymeleaf的三大特点： Thymeleaf 在有网络和无网络的环境下皆可运行，即它可以让美工在浏览器查看页面的静态效果，也可以让程序员在服务器查看带数据的动态页面效果。这是由于它支持 html 原型，然后在 html 标签里增加额外的属性来达到模板+数据的展示方式。浏览器解释 html 时会忽略未定义的标签属性，所以 thymeleaf 的模板可以静态地运行；当有数据返回到页面时，Thym">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-11-22T06:59:32.328Z">
+<meta property="og:updated_time" content="2018-11-22T08:07:05.836Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Thymeleaf使用详解">
 <meta name="twitter:description" content="Thymeleaf的三大特点： Thymeleaf 在有网络和无网络的环境下皆可运行，即它可以让美工在浏览器查看页面的静态效果，也可以让程序员在服务器查看带数据的动态页面效果。这是由于它支持 html 原型，然后在 html 标签里增加额外的属性来达到模板+数据的展示方式。浏览器解释 html 时会忽略未定义的标签属性，所以 thymeleaf 的模板可以静态地运行；当有数据返回到页面时，Thym">
@@ -121,8 +121,50 @@
 <li>等值云算法 <code>==, != (eq, ne)</code><h4 id="条件云算符"><a href="#条件云算符" class="headerlink" title="条件云算符"></a>条件云算符</h4></li>
 <li>if-then <code>(if的条件) ? (then要做的操作)</code></li>
 <li>if-then-else <code>(if的条件) ? (then要做的操作) : (else要做的操作)</code></li>
-<li>default <code>(value) ? : (default=value)</code> (没懂)<br>这些条件运算符可嵌套<br><code>&#39;User is of type &#39; + (${user.isAdmin()} ? &#39;Administrator&#39; : (${user.type} ?: &#39;Unknown&#39;))</code><br>|关键字|介绍|例子|<br>|th:id|替换id|<code>&lt;input th:id=&quot;&#39;xxx&#39; + ${collect.id}&quot;/&gt;</code>|</li>
+<li>default <code>(value) ? : (default=value)</code> (没懂)<br>这些条件运算符可嵌套<br><code>&#39;User is of type &#39; + (${user.isAdmin()} ? &#39;Administrator&#39; : (${user.type} ?: &#39;Unknown&#39;))</code><h3 id="常用的th标签"><a href="#常用的th标签" class="headerlink" title="常用的th标签"></a>常用的th标签</h3>参考(<a href="http://www.ityouknow.com/springboot/2016/05/01/spring-boot-thymeleaf.html" target="_blank" rel="noopener">http://www.ityouknow.com/springboot/2016/05/01/spring-boot-thymeleaf.html</a>)</li>
 </ul>
+<h3 id="常用的使用方法"><a href="#常用的使用方法" class="headerlink" title="常用的使用方法"></a>常用的使用方法</h3><ol>
+<li>赋值、字符串拼接(上文有例子)</li>
+<li>条件判断<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;a th:if=&quot;$&#123;myself==&apos;yes&apos;&#125;&quot; &gt; &lt;/i&gt; &lt;/a&gt;</span><br><span class="line">&lt;a th:unless=$&#123;session.user != null&#125; th:href=&quot;@&#123;/login&#125;&quot; &gt;Login&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><code>&lt;a&gt;</code>标签只有在<code>th:if</code>中条件成立时才显示<br><code>th:unless</code>于<code>th:if</code>恰好相反，只有表达式中的条件不成立，才会显示其内容</p>
+<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;tr  th:each=&quot;collect,iterStat : $&#123;collects&#125;&quot;&gt; </span><br><span class="line">     &lt;th scope=&quot;row&quot; th:text=&quot;$&#123;collect.id&#125;&quot;&gt;1&lt;/th&gt;</span><br><span class="line">     &lt;td &gt;</span><br><span class="line">        &lt;img th:src=&quot;$&#123;collect.webLogo&#125;&quot;/&gt;</span><br><span class="line">     &lt;/td&gt;</span><br><span class="line">     &lt;td th:text=&quot;$&#123;collect.url&#125;&quot;&gt;Mark&lt;/td&gt;</span><br><span class="line">     &lt;td th:text=&quot;$&#123;collect.title&#125;&quot;&gt;Otto&lt;/td&gt;</span><br><span class="line">     &lt;td th:text=&quot;$&#123;collect.description&#125;&quot;&gt;@mdo&lt;/td&gt;</span><br><span class="line">     &lt;td th:text=&quot;$&#123;terStat.index&#125;&quot;&gt;index&lt;/td&gt;</span><br><span class="line"> &lt;/tr&gt;</span><br></pre></td></tr></table></figure>
+<p> iterStat称作状态变量，属性有:</p>
+<ul>
+<li>index:当前迭代对象的index（从0开始计算)</li>
+<li>count: 当前迭代对象的index(从1开始计算)</li>
+<li>size:被迭代对象的大小</li>
+<li>current:当前迭代变量</li>
+<li>even/odd:布尔值，当前循环是否是偶数/奇数(从0开始计算)</li>
+<li>first:布尔值，当前循环是否是第一个</li>
+<li>last:布尔值，当前循环是否是最后一个<h3 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h3><code>&lt;a href=&quot;details.html&quot; th:href=&quot;@{/order/{orderId}/details(orderId=${o.id})}&quot;&gt;view&lt;/a&gt;</code><br>(orderId=${o.id}) 表示将括号内的内容作为URL参数处理，该语法避免使用字符串拼接，大大提高了可读性<br>可以通过{orderId}访问Context中的orderId变量<br><code>@{/order}</code>是Context相关的相对路径，在渲染时会自动添加上当前Web应用的Context名字，假设context名字为app，那么结果应该是/app/order<h3 id="内联js-没懂"><a href="#内联js-没懂" class="headerlink" title="内联js(没懂)"></a>内联js(没懂)</h3>内联文本：[[…]]内联文本的表示方式，使用时，必须先用th:inline=”text/javascript/none”激活，th:inline可以在父级标签内使用，甚至作为body的标签。内联文本尽管比th:text的代码少，不利于原型显示<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;script th:inline=&quot;javascript&quot;&gt;</span><br><span class="line">/*&lt;![CDATA[*/</span><br><span class="line">...</span><br><span class="line">var username = /*[[$&#123;sesion.user.name&#125;]]*/ &apos;Sebastian&apos;;</span><br><span class="line">var size = /*[[$&#123;size&#125;]]*/ 0;</span><br><span class="line">...</span><br><span class="line">/*]]&gt;*/</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>js附加代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/*[+</span><br><span class="line">var msg = &apos;This is a working application&apos;;</span><br><span class="line">+]*/</span><br></pre></td></tr></table></figure></p>
+<p>js移除代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/*[- */</span><br><span class="line">var msg = &apos;This is a non-working template&apos;;</span><br><span class="line">/* -]*/</span><br></pre></td></tr></table></figure></p>
+<h3 id="内嵌变量-相当于jsp的内置对象"><a href="#内嵌变量-相当于jsp的内置对象" class="headerlink" title="内嵌变量(相当于jsp的内置对象)"></a>内嵌变量(相当于jsp的内置对象)</h3><p>为了模板更加易用，Thymeleaf还提供了一系列Utility对象（内置于Context中），可以通过#直接访问</p>
+<ul>
+<li>dates ： java.util.Date的功能方法类</li>
+<li>calendars : 类似#dates，面向java.util.Calendar</li>
+<li>numbers : 格式化数字的功能方法类</li>
+<li>strings : 字符串对象的功能类，contains,startWiths,prepending/appending等等</li>
+<li>objects: 对objects的功能类操作</li>
+<li>bools: 对布尔值求值的功能方法</li>
+<li>arrays：对数组的功能类方法</li>
+<li>lists: 对lists功能类方法</li>
+<li>sets</li>
+<li>maps</li>
+<li>…<h4 id="dates"><a href="#dates" class="headerlink" title="dates"></a>dates</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * Format date with the specified pattern</span><br><span class="line"> * Also works with arrays, lists or sets</span><br><span class="line"> */</span><br><span class="line">$&#123;#dates.format(date, &apos;dd/MMM/yyyy HH:mm&apos;)&#125;</span><br><span class="line">$&#123;#dates.arrayFormat(datesArray, &apos;dd/MMM/yyyy HH:mm&apos;)&#125;</span><br><span class="line">$&#123;#dates.listFormat(datesList, &apos;dd/MMM/yyyy HH:mm&apos;)&#125;</span><br><span class="line">$&#123;#dates.setFormat(datesSet, &apos;dd/MMM/yyyy HH:mm&apos;)&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Create a date (java.util.Date) object for the current date and time</span><br><span class="line"> */</span><br><span class="line">$&#123;#dates.createNow()&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Create a date (java.util.Date) object for the current date (time set to 00:00)</span><br><span class="line"> */</span><br><span class="line">$&#123;#dates.createToday()&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="strings"><a href="#strings" class="headerlink" title="strings"></a>strings</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * Check whether a String is empty (or null). Performs a trim() operation before check</span><br><span class="line"> * Also works with arrays, lists or sets</span><br><span class="line"> */</span><br><span class="line">$&#123;#strings.isEmpty(name)&#125;</span><br><span class="line">$&#123;#strings.arrayIsEmpty(nameArr)&#125;</span><br><span class="line">$&#123;#strings.listIsEmpty(nameList)&#125;</span><br><span class="line">$&#123;#strings.setIsEmpty(nameSet)&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Check whether a String starts or ends with a fragment</span><br><span class="line"> * Also works with arrays, lists or sets</span><br><span class="line"> */</span><br><span class="line">$&#123;#strings.startsWith(name,&apos;Don&apos;)&#125;                  // also array*, list* and set*</span><br><span class="line">$&#123;#strings.endsWith(name,endingFragment)&#125;           // also array*, list* and set*</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Compute length</span><br><span class="line"> * Also works with arrays, lists or sets</span><br><span class="line"> */</span><br><span class="line">$&#123;#strings.length(str)&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Null-safe comparison and concatenation</span><br><span class="line"> */</span><br><span class="line">$&#123;#strings.equals(str)&#125;</span><br><span class="line">$&#123;#strings.equalsIgnoreCase(str)&#125;</span><br><span class="line">$&#123;#strings.concat(str)&#125;</span><br><span class="line">$&#123;#strings.concatReplaceNulls(str)&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Random</span><br><span class="line"> */</span><br><span class="line">$&#123;#strings.randomAlphanumeric(count)&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用thymeleaf布局"><a href="#使用thymeleaf布局" class="headerlink" title="使用thymeleaf布局"></a>使用thymeleaf布局</h3><p>定义代码片段,此时<code>th:frament=&quot;copy&quot;</code>相当于一个标记，标记当前的标签，这个标签可以位于任何页面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;footer th:fragment=&quot;copy&quot;&gt; </span><br><span class="line">&amp;copy; 2016</span><br><span class="line">&lt;/footer&gt;</span><br></pre></td></tr></table></figure></p>
+<p>在其他地方引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt; </span><br><span class="line">  &lt;div th:include=&quot;footer :: copy&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;div th:replace=&quot;footer :: copy&quot;&gt;&lt;/div&gt;</span><br><span class="line"> &lt;/body&gt;</span><br></pre></td></tr></table></figure></p>
+<p> th:include 和 th:replace区别，include只是加载，replace是替换<br> 返回的html：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> &lt;body&gt; </span><br><span class="line">   &lt;div&gt; &amp;copy; 2016 &lt;/div&gt; </span><br><span class="line">  &lt;footer&gt;&amp;copy; 2016 &lt;/footer&gt; </span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这是一个常用的后天页面布局，将整个页面分为头部，尾部、菜单栏、隐藏栏，点击菜单只改变content区域的页面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;body class=&quot;layout-fixed&quot;&gt;</span><br><span class="line">  &lt;div th:fragment=&quot;navbar&quot;  class=&quot;wrapper&quot;  role=&quot;navigation&quot;&gt;</span><br><span class="line">	&lt;div th:replace=&quot;fragments/header :: header&quot;&gt;Header&lt;/div&gt;</span><br><span class="line">	&lt;div th:replace=&quot;fragments/left :: left&quot;&gt;left&lt;/div&gt;</span><br><span class="line">	&lt;div th:replace=&quot;fragments/sidebar :: sidebar&quot;&gt;sidebar&lt;/div&gt;</span><br><span class="line">	&lt;div layout:fragment=&quot;content&quot; id=&quot;content&quot; &gt;&lt;/div&gt;</span><br><span class="line">	&lt;div th:replace=&quot;fragments/footer :: footer&quot;&gt;footer&lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure></p>
+<p>任何页面想使用这样的布局值只需要替换中见的 content模块即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;html xmlns:th=&quot;http://www.thymeleaf.org&quot; layout:decorator=&quot;layout&quot;&gt;</span><br><span class="line">   &lt;body&gt;</span><br><span class="line">      &lt;section layout:fragment=&quot;content&quot;&gt;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure></p>
+<p>注意，此时layout:decorator相当于把布局页面引入，只有该标签内的内容才不会被替换，所以这是content没有被布局页面替换。即后台布局页面的content被替换了<br>在引用模版的时候传参<br><code>&lt;head th:include=&quot;layout :: htmlhead&quot; th:with=&quot;title=&#39;Hello&#39;&quot;&gt;&lt;/head&gt;</code><br>layout 是文件地址，如果有文件夹可以这样写 fileName/layout:htmlhead<br>htmlhead 是指定义的代码片段 如 th:fragment=”copy”</p>
 
       
     </div>
@@ -139,9 +181,9 @@
 <nav id="article-nav">
   
   
-    <a href="/2018/11/21/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/11/22/RabbitMQ/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
+      <div class="article-nav-title">RabbitMQ</div>
     </a>
   
 </nav>
@@ -196,7 +238,11 @@
           </li>
         
           <li>
-            <a href="/2018/11/21/hello-world/">Hello World</a>
+            <a href="/2018/11/22/RabbitMQ/">RabbitMQ</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/22/Spring Data Jpade 使用/">Spring Date Jpa的使用</a>
           </li>
         
           <li>

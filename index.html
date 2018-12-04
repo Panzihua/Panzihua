@@ -111,7 +111,66 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjp2b7duf000090u1hxkljxci" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjp9jue78000050u1emobpvi7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring Boot集成Mybatis过程" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/29/Spring Boot集成Mybatis过程/" class="article-date">
+  <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>新建Spring Boot项目，勾选Mybatis支持</li>
+<li>application.properties添加相应配置(或者在手动在pom.xml添加依赖)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.3.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.type-aliases-package=com.example.demo.myDemo.domin</span><br><span class="line">mybatis.configuration.use-generated-keys=true</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
+<p>主要是配置mapper.xml文件的位置，容器的位置<br>此处附上thymeleaf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.thymeleaf.prefix=classpath:/Student/</span><br><span class="line">spring.thymeleaf.mode=LEGACYHTML5</span><br><span class="line">spring.thymeleaf.suffix=.html</span><br><span class="line">spring.thymeleaf.encoding=UTF-8</span><br><span class="line">spring.thymeleaf.servlet.content-type=text/html</span><br><span class="line">spring.thymeleaf.cache=false</span><br><span class="line">spring.resources.chain.strategy.content.enabled=true</span><br><span class="line">spring.resources.chain.strategy.content.paths=/**</span><br><span class="line">#thymeleaf end</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>在应用启动入口xxxxApplication.class加上@MapperScan(“包名”)。<br>主要用意在于告诉spring，dao层接口在哪<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@MapperScan(&quot;com.example.demo.myDemo.domin&quot;)</span><br><span class="line">public class DemoApplication extends SpringBootServletInitializer &#123;</span><br><span class="line">	@Override</span><br><span class="line">	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;</span><br><span class="line">		return builder.sources(DemoApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><ol>
+<li>每个mapper.xml文件对应一个dao层接口，这是用mapper标签的namespace属性所决定的</li>
+<li>Mybatis是面向SQL语句的框架，不要用Hibernate面向对象的思想去用它,要用SQL语句最简单的思维，比如查询到的外键可以说不是什么关系映射，它就是一个简简单单的一个列的一个值，所以数据容器可以只用基本数据类型去容纳它</li>
+<li><p>关于select标签的association子标签，若只是嵌套结果的用法，可以很简单的当成只是把一部分结果放进一个应用的对象中甚至不需要用association，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;studentResultMap&quot; type=&quot;Student&quot;&gt;</span><br><span class="line">        &lt;id property=&quot;sId&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sName&quot; column=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sAge&quot; column=&quot;age&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sSex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">        &lt;!--&lt;association property=&quot;myclass&quot; column=&quot;classid&quot; javaType=&quot;MyClass&quot; select=&quot;selectClass&quot; /&gt;--&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cId&quot; column=&quot;classid&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cName&quot; column=&quot;classname&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不需要mybatis-config.xml文件，需要配置的属性已经在application.xml中有了</p>
+</li>
+<li>不需要配置事务管理器，Spring Boot中有默认的实现，就算配置了也会被Spring Boot的配置覆盖</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjp9jue7g000350u1nyfgk7zb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -218,66 +277,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjp2b7dvm000290u151ckbknx" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring Boot集成Mybatis过程" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/29/Spring Boot集成Mybatis过程/" class="article-date">
-  <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li>新建Spring Boot项目，勾选Mybatis支持</li>
-<li>application.properties添加相应配置(或者在手动在pom.xml添加依赖)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.3.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.type-aliases-package=com.example.demo.myDemo.domin</span><br><span class="line">mybatis.configuration.use-generated-keys=true</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
-<p>主要是配置mapper.xml文件的位置，容器的位置<br>此处附上thymeleaf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.thymeleaf.prefix=classpath:/Student/</span><br><span class="line">spring.thymeleaf.mode=LEGACYHTML5</span><br><span class="line">spring.thymeleaf.suffix=.html</span><br><span class="line">spring.thymeleaf.encoding=UTF-8</span><br><span class="line">spring.thymeleaf.servlet.content-type=text/html</span><br><span class="line">spring.thymeleaf.cache=false</span><br><span class="line">spring.resources.chain.strategy.content.enabled=true</span><br><span class="line">spring.resources.chain.strategy.content.paths=/**</span><br><span class="line">#thymeleaf end</span><br></pre></td></tr></table></figure></p>
-<ol start="3">
-<li>在应用启动入口xxxxApplication.class加上@MapperScan(“包名”)。<br>主要用意在于告诉spring，dao层接口在哪<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@MapperScan(&quot;com.example.demo.myDemo.domin&quot;)</span><br><span class="line">public class DemoApplication extends SpringBootServletInitializer &#123;</span><br><span class="line">	@Override</span><br><span class="line">	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;</span><br><span class="line">		return builder.sources(DemoApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><ol>
-<li>每个mapper.xml文件对应一个dao层接口，这是用mapper标签的namespace属性所决定的</li>
-<li>Mybatis是面向SQL语句的框架，不要用Hibernate面向对象的思想去用它,要用SQL语句最简单的思维，比如查询到的外键可以说不是什么关系映射，它就是一个简简单单的一个列的一个值，所以数据容器可以只用基本数据类型去容纳它</li>
-<li><p>关于select标签的association子标签，若只是嵌套结果的用法，可以很简单的当成只是把一部分结果放进一个应用的对象中甚至不需要用association，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;studentResultMap&quot; type=&quot;Student&quot;&gt;</span><br><span class="line">        &lt;id property=&quot;sId&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sName&quot; column=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sAge&quot; column=&quot;age&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sSex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">        &lt;!--&lt;association property=&quot;myclass&quot; column=&quot;classid&quot; javaType=&quot;MyClass&quot; select=&quot;selectClass&quot; /&gt;--&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cId&quot; column=&quot;classid&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cName&quot; column=&quot;classname&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>不需要mybatis-config.xml文件，需要配置的属性已经在application.xml中有了</p>
-</li>
-<li>不需要配置事务管理器，Spring Boot中有默认的实现，就算配置了也会被Spring Boot的配置覆盖</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjp2b7dvn000390u1hm9evh0p" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjp9jue7w000c50u1i0c2sbav" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -448,23 +448,22 @@
 <p>如果blog有一个co-author怎么办？ select语句将看起来这个样子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;</span><br><span class="line">  select</span><br><span class="line">    B.id            as blog_id,</span><br><span class="line">    B.title         as blog_title,</span><br><span class="line">    A.id            as author_id,</span><br><span class="line">    A.username      as author_username,</span><br><span class="line">    A.password      as author_password,</span><br><span class="line">    A.email         as author_email,</span><br><span class="line">    A.bio           as author_bio,</span><br><span class="line">    CA.id           as co_author_id,</span><br><span class="line">    CA.username     as co_author_username,</span><br><span class="line">    CA.password     as co_author_password,</span><br><span class="line">    CA.email        as co_author_email,</span><br><span class="line">    CA.bio          as co_author_bio</span><br><span class="line">  from Blog B</span><br><span class="line">  left outer join Author A on B.author_id = A.id</span><br><span class="line">  left outer join Author CA on B.co_author_id = CA.id</span><br><span class="line">  where B.id = #&#123;id&#125;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
 <p>再次调用Author的resultMap将定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;authorResult&quot; type=&quot;Author&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;password&quot; column=&quot;author_password&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;email&quot; column=&quot;author_email&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;bio&quot; column=&quot;author_bio&quot;/&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
 <p>因为结果中的列名与resultMap中的列名不同。 你需要指定columnPrefix去重用映射co-author结果的resultMap。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;</span><br><span class="line">  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;</span><br><span class="line">  &lt;association property=&quot;author&quot;</span><br><span class="line">    resultMap=&quot;authorResult&quot; /&gt;</span><br><span class="line">  &lt;association property=&quot;coAuthor&quot;</span><br><span class="line">    resultMap=&quot;authorResult&quot;</span><br><span class="line">    columnPrefix=&quot;co_&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>集合<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;collection property=&quot;posts&quot; ofType=&quot;domain.blog.Post&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;</span><br><span class="line">&lt;/collection&gt;</span><br><span class="line">``` </span><br><span class="line">集合元素的作用几乎和关联是相同的。实际上,它们也很相似,文档的异同是多余的。 所以我们更多关注于它们的不同</span><br><span class="line">我们来继续上面的示例,一个博客只有一个作者。但是博客有很多文章。在博客类中, 这可以由下面这样的写法来表示:</span><br><span class="line">`private List&lt;Post&gt; posts;`</span><br><span class="line">要映射嵌套结果集合到 List 中,我们使用集合元素。就像关联元素一样,我们可以从 连接中使用嵌套查询,或者嵌套结果</span><br><span class="line">### 集合的嵌套查询</span><br><span class="line">首先,让我们看看使用嵌套查询来为博客加载文章</span><br></pre></td></tr></table></figure></p>
+<h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;collection property=&quot;posts&quot; ofType=&quot;domain.blog.Post&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;</span><br><span class="line">&lt;/collection&gt;</span><br><span class="line">``` </span><br><span class="line">集合元素的作用几乎和关联是相同的。实际上,它们也很相似,文档的异同是多余的。 所以我们更多关注于它们的不同</span><br><span class="line">我们来继续上面的示例,一个博客只有一个作者。但是博客有很多文章。在博客类中, 这可以由下面这样的写法来表示:</span><br><span class="line">`private List&lt;Post&gt; posts;`</span><br><span class="line">要映射嵌套结果集合到 List 中,我们使用集合元素。就像关联元素一样,我们可以从 连接中使用嵌套查询,或者嵌套结果</span><br><span class="line">### 集合的嵌套查询</span><br><span class="line">首先,让我们看看使用嵌套查询来为博客加载文章</span><br></pre></td></tr></table></figure>
 <resultmap id="blogResult" type="Blog"><br>  <collection property="posts" javatype="ArrayList" column="id" oftype="Post" select="selectPostsForBlog"><br></collection></resultmap>
 
 <select id="selectBlog" resultmap="blogResult"><br>  SELECT * FROM BLOG WHERE ID = #{id}<br></select>
 
 <p><select id="selectPostsForBlog" resulttype="Post"><br>  SELECT * FROM POST WHERE BLOG_ID = #{id}<br></select><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">这里你应该注意很多东西,但大部分代码和上面的关联元素是非常相似的。首先,你应 该注意我们使用的是集合元素。然后要注意那个**新的“ofType”属性**。这个属性用来区分 JavaBean(或字段)属性类型和集合包含的类型来说是很重要的。所以你可以读出下面这个 映射:</span><br><span class="line">`&lt;collection property=&quot;posts&quot; javaType=&quot;ArrayList&quot; column=&quot;id&quot; ofType=&quot;Post&quot; select=&quot;selectPostsForBlog&quot;/&gt;`</span><br><span class="line">ofType相当于泛型，用于定义ArrayList里的对象类型</span><br><span class="line">javaType 属性是不需要的,因为 MyBatis 在很多情况下会为你算出来。所以你可以缩短 写法:</span><br><span class="line">`&lt;collection property=&quot;posts&quot; column=&quot;id&quot; ofType=&quot;Post&quot; select=&quot;selectPostsForBlog&quot;/&gt;`</span><br><span class="line">### 集合的嵌套结果</span><br><span class="line">至此,你可以猜测集合的嵌套结果是如何来工作的,因为它和关联完全相同,除了它应 用了一个“ofType”属性</span><br><span class="line">首先, 让我们看看 SQL:</span><br></pre></td></tr></table></figure></p>
-<p><select id="selectBlog" resultmap="blogResult"><br>  select<br>  B.id as blog_id,<br>  B.title as blog_title,<br>  B.author_id as blog_author_id,<br>  P.id as post_id,<br>  P.subject as post_subject,<br>  P.body as post_body,<br>  from Blog B<br>  left outer join Post P on B.id = P.blog_id<br>  where B.id = #{id}<br></select><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">我们又一次联合了博客表和文章表,而且关注于保证特性,结果列标签的简单映射。现 在用文章映射集合映射博客,可以简单写为:</span><br><span class="line">```&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;</span><br><span class="line">  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;</span><br><span class="line">  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot;&gt;</span><br><span class="line">    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;</span><br><span class="line">    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;</span><br><span class="line">    &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;</span><br><span class="line">  &lt;/collection&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>同样,要记得 id 元素的重要性,如果你不记得了,请阅读上面的关联部分<br>同样, 如果你引用更长的形式允许你的结果映射的更多重用, 你可以使用下面这个替代 的映射:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;</span><br><span class="line">  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;</span><br><span class="line">  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot; resultMap=&quot;blogPostResult&quot; columnPrefix=&quot;post_&quot;/&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br><span class="line"></span><br><span class="line">&lt;resultMap id=&quot;blogPostResult&quot; type=&quot;Post&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;id&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;subject&quot; column=&quot;subject&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;body&quot; column=&quot;body&quot;/&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这个对你所映射的内容没有深度,广度或关联和集合相联合的限制。当映射它们 时你应该在大脑中保留它们的表现。 你的应用在找到最佳方法前要一直进行的单元测试和性 能测试。好在 myBatis 让你后来可以改变想法,而不对你的代码造成很小(或任何)影响。高级关联和集合映射是一个深度的主题</p>
-<h2 id="鉴别器"><a href="#鉴别器" class="headerlink" title="鉴别器"></a>鉴别器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;discriminator javaType=&quot;int&quot; column=&quot;draft&quot;&gt;</span><br><span class="line">  &lt;case value=&quot;1&quot; resultType=&quot;DraftPost&quot;/&gt;</span><br><span class="line">&lt;/discriminator&gt;</span><br></pre></td></tr></table></figure>
-<p>有时一个单独的数据库查询也许返回很多不同 (但是希望有些关联) 数据类型的结果集。 鉴别器元素就是被设计来处理这个情况的, 还有包括类的继承层次结构。 鉴别器非常容易理 解,因为它的表现很像 Java 语言中的 switch 语句<br>定义鉴别器指定了 column 和 javaType 属性。 列是 MyBatis 查找比较值的地方。 JavaType 是需要被用来保证等价测试的合适类型(尽管字符串在很多情形下都会有用)。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;vehicleResult&quot; type=&quot;Vehicle&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">  &lt;result property=&quot;vin&quot; column=&quot;vin&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;year&quot; column=&quot;year&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;make&quot; column=&quot;make&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;model&quot; column=&quot;model&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;color&quot; column=&quot;color&quot;/&gt;</span><br><span class="line">  &lt;discriminator javaType=&quot;int&quot; column=&quot;vehicle_type&quot;&gt;</span><br><span class="line">    &lt;case value=&quot;1&quot; resultMap=&quot;carResult&quot;/&gt;</span><br><span class="line">    &lt;case value=&quot;2&quot; resultMap=&quot;truckResult&quot;/&gt;</span><br><span class="line">    &lt;case value=&quot;3&quot; resultMap=&quot;vanResult&quot;/&gt;</span><br><span class="line">    &lt;case value=&quot;4&quot; resultMap=&quot;suvResult&quot;/&gt;</span><br><span class="line">  &lt;/discriminator&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>在这个示例中, MyBatis 会从结果集中得到每条记录, 然后比较它的 vehicle 类型的值。 如果它匹配任何一个鉴别器的实例,那么就使用这个实例指定的结果映射。换句话说,这样 做完全是剩余的结果映射被忽略(除非它被扩展,这在第二个示例中讨论) 。如果没有任何 一个实例相匹配,那么 MyBatis 仅仅使用鉴别器块外定义的结果映射。所以,如果 carResult 按如下声明:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;carResult&quot; type=&quot;Car&quot;&gt;</span><br><span class="line">  &lt;result property=&quot;doorCount&quot; column=&quot;door_count&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>那么只有 doorCount 属性会被加载。这步完成后完整地允许鉴别器实例的独立组,尽管 和父结果映射可能没有什么关系。这种情况下,我们当然知道 cars 和 vehicles 之间有关系, 如 Car 是一个 Vehicle 实例。因此,我们想要剩余的属性也被加载。我们设置的结果映射的 简单改变如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;carResult&quot; type=&quot;Car&quot; extends=&quot;vehicleResult&quot;&gt;</span><br><span class="line">  &lt;result property=&quot;doorCount&quot; column=&quot;door_count&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>现在 vehicleResult 和 carResult 的属性都会被加载了(不是很懂，加了extedn)<br>尽管曾经有些人会发现这个外部映射定义会多少有一些令人厌烦之处。 因此还有另外一 种语法来做简洁的映射风格。比如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;vehicleResult&quot; type=&quot;Vehicle&quot;&gt;</span><br><span class="line">  &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">  &lt;result property=&quot;vin&quot; column=&quot;vin&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;year&quot; column=&quot;year&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;make&quot; column=&quot;make&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;model&quot; column=&quot;model&quot;/&gt;</span><br><span class="line">  &lt;result property=&quot;color&quot; column=&quot;color&quot;/&gt;</span><br><span class="line">  &lt;discriminator javaType=&quot;int&quot; column=&quot;vehicle_type&quot;&gt;</span><br><span class="line">    &lt;case value=&quot;1&quot; resultType=&quot;carResult&quot;&gt;</span><br><span class="line">      &lt;result property=&quot;doorCount&quot; column=&quot;door_count&quot; /&gt;</span><br><span class="line">    &lt;/case&gt;</span><br><span class="line">    &lt;case value=&quot;2&quot; resultType=&quot;truckResult&quot;&gt;</span><br><span class="line">      &lt;result property=&quot;boxSize&quot; column=&quot;box_size&quot; /&gt;</span><br><span class="line">      &lt;result property=&quot;extendedCab&quot; column=&quot;extended_cab&quot; /&gt;</span><br><span class="line">    &lt;/case&gt;</span><br><span class="line">    &lt;case value=&quot;3&quot; resultType=&quot;vanResult&quot;&gt;</span><br><span class="line">      &lt;result property=&quot;powerSlidingDoor&quot; column=&quot;power_sliding_door&quot; /&gt;</span><br><span class="line">    &lt;/case&gt;</span><br><span class="line">    &lt;case value=&quot;4&quot; resultType=&quot;suvResult&quot;&gt;</span><br><span class="line">      &lt;result property=&quot;allWheelDrive&quot; column=&quot;all_wheel_drive&quot; /&gt;</span><br><span class="line">    &lt;/case&gt;</span><br><span class="line">  &lt;/discriminator&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这些都是结果映射, 如果你不指定任何结果, 那么 MyBatis 将会为你自动匹配列 和属性。所以这些例子中的大部分是很冗长的,而其实是不需要的。也就是说,很多数据库 是很复杂的,我们不太可能对所有示例都能依靠它</p>
-<h2 id="自动映射"><a href="#自动映射" class="headerlink" title="自动映射"></a>自动映射</h2><p>正如你在前面一节看到的，在简单的场景下，MyBatis可以替你自动映射查询结果。 如果遇到复杂的场景，你需要构建一个result map。 但是在本节你将看到，你也可以混合使用这两种策略。 让我们到深一点的层面上看看自动映射是怎样工作的<br>当自动映射查询结果时，MyBatis会获取sql返回的列名并在java类中查找相同名字的属性（忽略大小写）。 这意味着如果Mybatis发现了ID列和id属性，Mybatis会将ID的值赋给id<br>通常数据库列使用大写单词命名，单词间用下划线分隔；而java属性一般遵循驼峰命名法。 为了在这两种命名方式之间启用自动映射，需要将 mapUnderscoreToCamelCase设置为true<br>自动映射甚至在特定的result map下也能工作。在这种情况下，对于每一个result map,所有的ResultSet提供的列， 如果没有被手工映射，则将被自动映射。自动映射处理完毕后手工映射才会被处理。 在接下来的例子中， id 和 userName列将被自动映射， hashed_password 列将根据配置映射<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectUsers&quot; resultMap=&quot;userResultMap&quot;&gt;</span><br><span class="line">  select</span><br><span class="line">    user_id             as &quot;id&quot;,</span><br><span class="line">    user_name           as &quot;userName&quot;,</span><br><span class="line">    hashed_password</span><br><span class="line">  from some_table</span><br><span class="line">  where id = #&#123;id&#125;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;userResultMap&quot; type=&quot;User&quot;&gt;</span><br><span class="line">  &lt;result property=&quot;password&quot; column=&quot;hashed_password&quot;/&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
+<p><select id="selectBlog" resultmap="blogResult"><br>  select<br>  B.id as blog_id,<br>  B.title as blog_title,<br>  B.author_id as blog_author_id,<br>  P.id as post_id,<br>  P.subject as post_subject,<br>  P.body as post_body,<br>  from Blog B<br>  left outer join Post P on B.id = P.blog_id<br>  where B.id = #{id}<br></select><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我们又一次联合了博客表和文章表,而且关注于保证特性,结果列标签的简单映射。现 在用文章映射集合映射博客,可以简单写为:</span><br></pre></td></tr></table></figure></p>
+<resultmap id="blogResult" type="Blog"><br>  <id property="id" column="blog_id"><br>  <result property="title" column="blog_title"><br>  <collection property="posts" oftype="Post"><br>    <id property="id" column="post_id"><br>    <result property="subject" column="post_subject"><br>    <result property="body" column="post_body"><br>  </result></result></id></collection><br></result></id></resultmap><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">同样,要记得 id 元素的重要性,如果你不记得了,请阅读上面的关联部分</span><br><span class="line">同样, 如果你引用更长的形式允许你的结果映射的更多重用, 你可以使用下面这个替代 的映射:</span><br></pre></td></tr></table></figure><br><br><resultmap id="blogResult" type="Blog"><br>  <id property="id" column="blog_id"><br>  <result property="title" column="blog_title"><br>  <collection property="posts" oftype="Post" resultmap="blogPostResult" columnprefix="post_"><br></collection></result></id></resultmap>
+
+<p><resultmap id="blogPostResult" type="Post"><br>  <id property="id" column="id"><br>  <result property="subject" column="subject"><br>  <result property="body" column="body"><br></result></result></id></resultmap><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这个对你所映射的内容没有深度,广度或关联和集合相联合的限制。当映射它们 时你应该在大脑中保留它们的表现。 你的应用在找到最佳方法前要一直进行的单元测试和性 能测试。好在 myBatis 让你后来可以改变想法,而不对你的代码造成很小(或任何)影响。高级关联和集合映射是一个深度的主题</span><br><span class="line">## 鉴别器</span><br></pre></td></tr></table></figure></p>
+<p><discriminator javatype="int" column="draft"><br>  <case value="1" resulttype="DraftPost"><br></case></discriminator><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">有时一个单独的数据库查询也许返回很多不同 (但是希望有些关联) 数据类型的结果集。 鉴别器元素就是被设计来处理这个情况的, 还有包括类的继承层次结构。 鉴别器非常容易理 解,因为它的表现很像 Java 语言中的 switch 语句</span><br><span class="line">定义鉴别器指定了 column 和 javaType 属性。 列是 MyBatis 查找比较值的地方。 JavaType 是需要被用来保证等价测试的合适类型(尽管字符串在很多情形下都会有用)。比如：</span><br></pre></td></tr></table></figure></p>
+<p><resultmap id="vehicleResult" type="Vehicle"><br>  <id property="id" column="id"><br>  <result property="vin" column="vin"><br>  <result property="year" column="year"><br>  <result property="make" column="make"><br>  <result property="model" column="model"><br>  <result property="color" column="color"><br>  <discriminator javatype="int" column="vehicle_type"><br>    <case value="1" resultmap="carResult"><br>    <case value="2" resultmap="truckResult"><br>    <case value="3" resultmap="vanResult"><br>    <case value="4" resultmap="suvResult"><br>  </case></case></case></case></discriminator><br></result></result></result></result></result></id></resultmap><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这个示例中, MyBatis 会从结果集中得到每条记录, 然后比较它的 vehicle 类型的值。 如果它匹配任何一个鉴别器的实例,那么就使用这个实例指定的结果映射。换句话说,这样 做完全是剩余的结果映射被忽略(除非它被扩展,这在第二个示例中讨论) 。如果没有任何 一个实例相匹配,那么 MyBatis 仅仅使用鉴别器块外定义的结果映射。所以,如果 carResult 按如下声明:</span><br></pre></td></tr></table></figure></p>
+<p><resultmap id="carResult" type="Car"><br>  <result property="doorCount" column="door_count"><br></result></resultmap><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">那么只有 doorCount 属性会被加载。这步完成后完整地允许鉴别器实例的独立组,尽管 和父结果映射可能没有什么关系。这种情况下,我们当然知道 cars 和 vehicles 之间有关系, 如 Car 是一个 Vehicle 实例。因此,我们想要剩余的属性也被加载。我们设置的结果映射的 简单改变如下:</span><br></pre></td></tr></table></figure></p>
+<p><resultmap id="carResult" type="Car" extends="vehicleResult"><br>  <result property="doorCount" column="door_count"><br></result></resultmap><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">现在 vehicleResult 和 carResult 的属性都会被加载了(不是很懂，加了extedn)</span><br><span class="line">尽管曾经有些人会发现这个外部映射定义会多少有一些令人厌烦之处。 因此还有另外一 种语法来做简洁的映射风格。比如:</span><br></pre></td></tr></table></figure></p>
+<p><resultmap id="vehicleResult" type="Vehicle"><br>  <id property="id" column="id"><br>  <result property="vin" column="vin"><br>  <result property="year" column="year"><br>  <result property="make" column="make"><br>  <result property="model" column="model"><br>  <result property="color" column="color"><br>  <discriminator javatype="int" column="vehicle_type"><br>    <case value="1" resulttype="carResult"><br>      <result property="doorCount" column="door_count"><br>    </result></case><br>    <case value="2" resulttype="truckResult"><br>      <result property="boxSize" column="box_size"><br>      <result property="extendedCab" column="extended_cab"><br>    </result></result></case><br>    <case value="3" resulttype="vanResult"><br>      <result property="powerSlidingDoor" column="power_sliding_door"><br>    </result></case><br>    <case value="4" resulttype="suvResult"><br>      <result property="allWheelDrive" column="all_wheel_drive"><br>    </result></case><br>  </discriminator><br></result></result></result></result></result></id></resultmap><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">这些都是结果映射, 如果你不指定任何结果, 那么 MyBatis 将会为你自动匹配列 和属性。所以这些例子中的大部分是很冗长的,而其实是不需要的。也就是说,很多数据库 是很复杂的,我们不太可能对所有示例都能依靠它</span><br><span class="line">## 自动映射</span><br><span class="line">正如你在前面一节看到的，在简单的场景下，MyBatis可以替你自动映射查询结果。 如果遇到复杂的场景，你需要构建一个result map。 但是在本节你将看到，你也可以混合使用这两种策略。 让我们到深一点的层面上看看自动映射是怎样工作的</span><br><span class="line">当自动映射查询结果时，MyBatis会获取sql返回的列名并在java类中查找相同名字的属性（忽略大小写）。 这意味着如果Mybatis发现了ID列和id属性，Mybatis会将ID的值赋给id</span><br><span class="line">通常数据库列使用大写单词命名，单词间用下划线分隔；而java属性一般遵循驼峰命名法。 为了在这两种命名方式之间启用自动映射，需要将 mapUnderscoreToCamelCase设置为true</span><br><span class="line">自动映射甚至在特定的result map下也能工作。在这种情况下，对于每一个result map,所有的ResultSet提供的列， 如果没有被手工映射，则将被自动映射。自动映射处理完毕后手工映射才会被处理。 在接下来的例子中， id 和 userName列将被自动映射， hashed_password 列将根据配置映射</span><br></pre></td></tr></table></figure></p>
+<p><select id="selectUsers" resultmap="userResultMap"><br>  select<br>    user_id             as “id”,<br>    user_name           as “userName”,<br>    hashed_password<br>  from some_table<br>  where id = #{id}<br></select><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">&lt;resultMap id=&quot;userResultMap&quot; type=&quot;User&quot;&gt;</span><br><span class="line">  &lt;result property=&quot;password&quot; column=&quot;hashed_password&quot;/&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure></p>
 <p>有三种自动映射等级：</p>
 <ul>
 <li>NONE 禁用自动映射。仅设置手动映射属性</li>
@@ -489,7 +488,131 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjp2b7dwd000690u1vevgg4f7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjp9jue8i000j50u1dy9yki77" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-RabbitMQ" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/22/RabbitMQ/" class="article-date">
+  <time datetime="2018-11-21T16:00:00.000Z" itemprop="datePublished">2018-11-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/22/RabbitMQ/">RabbitMQ</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="RabbitMQ介绍"><a href="#RabbitMQ介绍" class="headerlink" title="RabbitMQ介绍"></a>RabbitMQ介绍</h2><p>RabbitMQ是实现AMQP（高级消息队列协议）的消息中间件的一种<br>AMQP，即Advanced Message Queuing Protocol，高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。消息中间件主要用于组件之间的解耦，消息的发送者无需知道消息使用者的存在，反之亦然。AMQP的主要特征是面向消息、队列、路由（包括点对点和发布/订阅）、可靠性、安全<br>RabbitMQ是一个开源的AMQP实现，服务器端用Erlang语言编写，支持多种客户端，如：Python、Ruby、.NET、Java、JMS、C、PHP、ActionScript、XMPP、STOMP等，支持AJAX。用于在分布式系统中存储转发消息，在易用性、扩展性、高可用性等方面表现不俗<br>RabitMq在消息队列上加入一层抽象：交换机。用于让生产者与队列没有直接联系，而是给交换机，交换机再把消息加入到队列中去。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>RabbitMQ每个服务器有虚拟主机、交换机、队列和绑定</p>
+<ul>
+<li>虚拟主机：一个虚拟主机持有一组交换机、队列和绑定。RabbitMQ中永驻只能以虚拟主机的粒度进行权限控制，所以一个一台服务器拥有多个虚拟主机。如果要禁止A组访问B组的交换机/队列/绑定。必须为A和B分别创建一个虚拟主机。</li>
+<li>交换机：用于转发信息，不做储存。如果没有 Queue bind 到 Exchange 的话，它会直接丢弃掉 Producer 发送过来的消息。根据路由键来决定发到哪个队列中去，路由键位于消息中</li>
+<li>绑定：交换机和队列绑定<h2 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h2>四种类型交换机</li>
+<li>Direct：direct 类型的行为是”先匹配, 再投送”. 即在绑定时设定一个 routing_key, 消息的routing_key 匹配时, 才会被交换器投送到绑定的队列中去</li>
+<li>Topic：按规则转发消息（最灵活）</li>
+<li>Headers：设置header attribute参数类型的交换机</li>
+<li>Fanout：转发消息到所有绑定队列<h3 id="Direct-Exchange"><a href="#Direct-Exchange" class="headerlink" title="Direct Exchange"></a>Direct Exchange</h3>Direct Exchange是RabbitMQ默认的交换机模式，也是最简单的模式，根据key全文匹配去寻找队列<br>当消息中的路由键与交换机中的binding key全文匹配上时，才会转发到对应的队列中<h3 id="Topic-Exchange"><a href="#Topic-Exchange" class="headerlink" title="Topic Exchange"></a>Topic Exchange</h3>转发消息主要是根据通配符<br>在这种交换机模式下：</li>
+<li>路由键必须是一串字符，用句号（<code>.</code>） 隔开，比如说 agreements.us，或者 agreements.eu.stockholm 等</li>
+<li>路由模式必须包含一个 星号（<code>*</code>），主要用于匹配路由键指定位置的一个单词，比如说，一个路由模式是这样子：agreements..b.*，那么就只能匹配路由键是这样子的：第一个单词是 agreements，第三个单词是 b。 井号（#）就表示相当于一个或者多个单词，例如一个匹配模式是agreements.eu.berlin.#，那么，以agreements.eu.berlin开头的路由键都是可以的<br>topic 和 direct 类似, 只是匹配上支持了”模式”, 在”点分”的 routing_key 形式中, 可以使用两个通配符:</li>
+<li><code>*</code>表示一个词</li>
+<li><code>#</code>表示零个或多个词<h3 id="Headers-Exchange"><a href="#Headers-Exchange" class="headerlink" title="Headers Exchange"></a>Headers Exchange</h3>headers 也是根据规则匹配, 相较于 direct 和 topic 固定地使用 routing_key , headers 则是一个自定义匹配规则的类型. 在队列与交换器绑定时, 会设定一组键值对规则, 消息中也包括一组键值对( headers 属性), 当这些键值对有一对, 或全部匹配时, 消息被投送到对应队列<h3 id="Fanout-Exchange"><a href="#Fanout-Exchange" class="headerlink" title="Fanout Exchange"></a>Fanout Exchange</h3>Fanout Exchange 消息广播的模式，不管路由键或者是路由模式，会把消息发给绑定给它的全部队列，如果配置了routing_key会被忽略</li>
+</ul>
+<h2 id="待补充Spring-boot上的集成"><a href="#待补充Spring-boot上的集成" class="headerlink" title="(待补充Spring boot上的集成)"></a>(待补充Spring boot上的集成)</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/22/RabbitMQ/" data-id="cjp9jue7c000150u1e4p27ra9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring Data Jpade 使用" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/22/Spring Data Jpade 使用/" class="article-date">
+  <time datetime="2018-11-21T16:00:00.000Z" itemprop="datePublished">2018-11-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/22/Spring Data Jpade 使用/">Spring Date Jpa的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Jpa"><a href="#Jpa" class="headerlink" title="Jpa"></a>Jpa</h2><p>JPA(Java Persistence API)是Sun官方提出的Java持久化规范。它为Java开发人员提供了一种对象/关联映射工具来管理Java应用中的关系数据。他的出现主要是为了简化现有的持久化开发工作和整合ORM技术，结束现在Hibernate，TopLink，JDO等ORM框架各自为营的局面。值得注意的是，JPA是在充分吸收了现有Hibernate，TopLink，JDO等ORM框架的基础上发展而来的，具有易于使用，伸缩性强等优点。从目前的开发社区的反应上看，JPA受到了极大的支持和赞扬，其中就包括了Spring与EJB3.0的开发团队<br>JPA是一套规范，不是一套产品，那么像Hibernate,TopLink,JDO他们是一套产品，如果说这些产品实现了这个JPA规范，那么我们就可以叫他们为JPA的实现产品</p>
+<h3 id="Spring-Data-Jpa"><a href="#Spring-Data-Jpa" class="headerlink" title="Spring Data Jpa"></a>Spring Data Jpa</h3><p>Spring Data JPA 是 Spring 基于 ORM 框架、JPA 规范的基础上封装的一套JPA应用框架，可使开发者用极简的代码即可实现对数据的访问和操作。它提供了包括增删改查等在内的常用功能，且易于扩展！学习并使用 Spring Data JPA 可以极大提高开发效率<br>解脱了DAO层的操作，基本上所有CRUD都可以依赖于它来实现</p>
+<h2 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h2><p>一种是spring data默认已经实现，一种是根据查询的方法来自动解析成SQL<br>默认实现的方法：</p>
+<ol>
+<li>继承JpaRepository<br><code>public interface UserRepository extends JpaRepository&lt;User, Long&gt;{}</code></li>
+<li>默认方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testBaseQuery() throws Exception &#123;</span><br><span class="line">	User user=new User();</span><br><span class="line">	userRepository.findAll();</span><br><span class="line">	userRepository.findOne(1l);</span><br><span class="line">	userRepository.save(user);</span><br><span class="line">	userRepository.delete(user);</span><br><span class="line">	userRepository.count();</span><br><span class="line">	userRepository.exists(1l);</span><br><span class="line">	// ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="自定义简单查询"><a href="#自定义简单查询" class="headerlink" title="自定义简单查询"></a>自定义简单查询</h2><p>根据方法名自动生成Sql，主要语法<code>findXXBy,readAXXBy,queryXXBy,countXXBy, getXXBy</code>后面跟属性名称<br><code>User findByUserName(String userName);</code><br>可以加一些关键字<code>And、 Or</code><br><code>User findByUserNameOrEmail(String username, String email);</code><br>修改、删除和统计也类似<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Long deleteById(Long id);</span><br><span class="line">Long countByUserName(String userName)</span><br></pre></td></tr></table></figure></p>
+<p>基本上Sql体系中的关键词都可以用，例如<code>LIKE、 IgnoreCase、 OrderBy</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; findByEmailLike(String email);</span><br><span class="line">User findByUserNameIgnoreCase(String userName);</span><br><span class="line">List&lt;User&gt; findByUserNameOrderByEmailDesc(String email);</span><br></pre></td></tr></table></figure></p>
+<p>具体关键字，使用方法和生成Sql可以参考<br>(<a href="http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html" target="_blank" rel="noopener">http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html</a>)</p>
+<h2 id="复杂查询"><a href="#复杂查询" class="headerlink" title="复杂查询"></a>复杂查询</h2><h3 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h3><p>查询的方法中，需要传入参数Pageable ,当查询中有多个参数的时候Pageable建议做为最后一个参数传入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;User&gt; findALL(Pageable pageable);</span><br><span class="line">Page&lt;User&gt; findByUserName(String userName,Pageable pageable);</span><br></pre></td></tr></table></figure></p>
+<p>Pageable 是spring封装的分页实现类，使用的时候需要传入页数、每页条数和排序规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testPageQuery() throws Exception &#123;</span><br><span class="line">	int page=1,size=10;</span><br><span class="line">	Sort sort = new Sort(Direction.DESC, &quot;id&quot;);</span><br><span class="line">    Pageable pageable = new PageRequest(page, size, sort);</span><br><span class="line">    userRepository.findALL(pageable);</span><br><span class="line">    userRepository.findByUserName(&quot;testName&quot;, pageable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="限制查询"><a href="#限制查询" class="headerlink" title="限制查询"></a>限制查询</h3><p>有时候我们只需要查询前N个元素，或者支取前一个实体<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ser findFirstByOrderByLastnameAsc();</span><br><span class="line">User findTopByOrderByAgeDesc();</span><br><span class="line">Page&lt;User&gt; queryFirst10ByLastname(String lastname, Pageable pageable);</span><br><span class="line">List&lt;User&gt; findFirst10ByLastname(String lastname, Sort sort);</span><br><span class="line">List&lt;User&gt; findTop10ByLastname(String lastname, Pageable pageable);</span><br></pre></td></tr></table></figure></p>
+<h3 id="自定义Sql查询"><a href="#自定义Sql查询" class="headerlink" title="自定义Sql查询"></a>自定义Sql查询</h3><p>在SQL的查询方法上面使用<code>@Query</code>注解，如涉及到删除和修改在需要加上<code>@Modifying</code>也可以根据需要添加<code>@Transactional</code>对事物的支持，查询超时的设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Modifying</span><br><span class="line">@Query(&quot;update User u set u.userName = ?1 where u.id = ?2&quot;)</span><br><span class="line">int modifyByIdAndUserId(String  userName, Long id);</span><br><span class="line">	</span><br><span class="line">@Transactional</span><br><span class="line">@Modifying</span><br><span class="line">@Query(&quot;delete from User where id = ?1&quot;)</span><br><span class="line">void deleteByUserId(Long id);</span><br><span class="line">  </span><br><span class="line">@Transactional(timeout = 10)</span><br><span class="line">@Query(&quot;select u from User u where u.emailAddress = ?1&quot;)</span><br><span class="line">User findByEmailAddress(String emailAddress);</span><br></pre></td></tr></table></figure></p>
+<h3 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h3><p>多表查询在spring data jpa中有两种实现方式，第一种是利用hibernate的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里主要第二种方式</p>
+<ol>
+<li>定义一个结果集的接口类<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public interface HotelSummary &#123;</span><br><span class="line"></span><br><span class="line">	City getCity();</span><br><span class="line"></span><br><span class="line">	String getName();</span><br><span class="line"></span><br><span class="line">	Double getAverageRating();</span><br><span class="line"></span><br><span class="line">	default Integer getAverageRatingRounded() &#123;</span><br><span class="line">		return getAverageRating() == null ? null : (int) Math.round(getAverageRating());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>查询的方法返回类型设置为新创建的接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Query(&quot;select h.city as city, h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r where h.city = ?1 group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(City city, Pageable pageable);</span><br><span class="line"></span><br><span class="line">@Query(&quot;select h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r  group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(Pageable pageable);</span><br></pre></td></tr></table></figure></p>
+<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;HotelSummary&gt; hotels = this.hotelRepository.findByCity(new PageRequest(0, 10, Direction.ASC, &quot;name&quot;));</span><br><span class="line">for(HotelSummary summay:hotels)&#123;</span><br><span class="line">		System.out.println(&quot;Name&quot; +summay.getName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在运行中Spring会给接口（HotelSummary）自动生产一个代理类来接收返回的结果，代码汇总使用getXX的形式来获取</p>
+<h2 id="多数据源的支持"><a href="#多数据源的支持" class="headerlink" title="多数据源的支持"></a>多数据源的支持</h2><ol>
+<li>配置多数据源</li>
+<li>不同源的实体类放入不同包路径</li>
+<li>声明不同的包路径下使用不同的数据源、事务支持<h3 id="异构数据库多远支持"><a href="#异构数据库多远支持" class="headerlink" title="异构数据库多远支持"></a>异构数据库多远支持</h3>对mysql的支持，也需要对mongodb的查询<br>实体类声明@Entity 关系型数据库支持类型、声明@Document 为mongodb支持类型，不同的数据源使用不同的实体就可以了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">interface PersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface UserRepository extends Repository&lt;User, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Document</span><br><span class="line">public class User &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>但是，如果User用户既使用mysql也使用mongodb呢，也可以做混合使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface JpaPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface MongoDBPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">@Document</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以通过对不同的包路径进行声明，比如A包路径下使用mysql,B包路径下使用mongoDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@EnableJpaRepositories(basePackages = &quot;com.neo.repositories.jpa&quot;)</span><br><span class="line">@EnableMongoRepositories(basePackages = &quot;com.neo.repositories.mongo&quot;)</span><br><span class="line">interface Configuration &#123; &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="使用枚举"><a href="#使用枚举" class="headerlink" title="使用枚举"></a>使用枚举</h3><p>使用枚举的时候，我们希望数据库中存储的是枚举对应的String类型，而不是枚举的索引值，需要在属性上面添加<code>@Enumerated(EnumType.STRING)</code>注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Enumerated(EnumType.STRING) </span><br><span class="line">@Column(nullable = true)</span><br><span class="line">private UserType type;</span><br></pre></td></tr></table></figure></p>
+<h3 id="不需要和数据库映射的属性"><a href="#不需要和数据库映射的属性" class="headerlink" title="不需要和数据库映射的属性"></a>不需要和数据库映射的属性</h3><p>正常情况下我们在实体类上加入注解<code>@Entity</code>，就会让实体类和表相关连如果其中某个属性我们不需要和数据库来关联只是在展示的时候做计算，只需要加上<code>@Transient</code>属性既可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Transient</span><br><span class="line">private String  userName;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/22/Spring Data Jpade 使用/" data-id="cjp9jue7t000950u1t72nt35k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -605,7 +728,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/thymeleaf使用详解/" data-id="cjos91hts0000wcu1nqk6wni3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/22/thymeleaf使用详解/" data-id="cjp9jue83000g50u1y5nl4ezo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -617,10 +740,10 @@
 
 
   
-    <article id="post-RabbitMQ" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-Spring-Boot入门" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/11/22/RabbitMQ/" class="article-date">
-  <time datetime="2018-11-21T16:00:00.000Z" itemprop="datePublished">2018-11-22</time>
+    <a href="/2018/11/21/Spring-Boot入门/" class="article-date">
+  <time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished">2018-11-21</time>
 </a>
     
   </div>
@@ -631,7 +754,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/22/RabbitMQ/">RabbitMQ</a>
+      <a class="article-title" href="/2018/11/21/Spring-Boot入门/">Spring boot快速入门构建</a>
     </h1>
   
 
@@ -639,97 +762,39 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="RabbitMQ介绍"><a href="#RabbitMQ介绍" class="headerlink" title="RabbitMQ介绍"></a>RabbitMQ介绍</h2><p>RabbitMQ是实现AMQP（高级消息队列协议）的消息中间件的一种<br>AMQP，即Advanced Message Queuing Protocol，高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。消息中间件主要用于组件之间的解耦，消息的发送者无需知道消息使用者的存在，反之亦然。AMQP的主要特征是面向消息、队列、路由（包括点对点和发布/订阅）、可靠性、安全<br>RabbitMQ是一个开源的AMQP实现，服务器端用Erlang语言编写，支持多种客户端，如：Python、Ruby、.NET、Java、JMS、C、PHP、ActionScript、XMPP、STOMP等，支持AJAX。用于在分布式系统中存储转发消息，在易用性、扩展性、高可用性等方面表现不俗<br>RabitMq在消息队列上加入一层抽象：交换机。用于让生产者与队列没有直接联系，而是给交换机，交换机再把消息加入到队列中去。</p>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>RabbitMQ每个服务器有虚拟主机、交换机、队列和绑定</p>
+        <h2 id="Spring-Boot简介"><a href="#Spring-Boot简介" class="headerlink" title="Spring Boot简介"></a>Spring Boot简介</h2><p>Spring Boot 集合Maven快速配置项目所需要的开发环境的框架。</p>
+<hr>
+<p>Maven构建入口：(<a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io/</a>)</p>
+<hr>
+<h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><p>三个基础文件</p>
 <ul>
-<li>虚拟主机：一个虚拟主机持有一组交换机、队列和绑定。RabbitMQ中永驻只能以虚拟主机的粒度进行权限控制，所以一个一台服务器拥有多个虚拟主机。如果要禁止A组访问B组的交换机/队列/绑定。必须为A和B分别创建一个虚拟主机。</li>
-<li>交换机：用于转发信息，不做储存。如果没有 Queue bind 到 Exchange 的话，它会直接丢弃掉 Producer 发送过来的消息。根据路由键来决定发到哪个队列中去，路由键位于消息中</li>
-<li>绑定：交换机和队列绑定<h2 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h2>四种类型交换机</li>
-<li>Direct：direct 类型的行为是”先匹配, 再投送”. 即在绑定时设定一个 routing_key, 消息的routing_key 匹配时, 才会被交换器投送到绑定的队列中去</li>
-<li>Topic：按规则转发消息（最灵活）</li>
-<li>Headers：设置header attribute参数类型的交换机</li>
-<li>Fanout：转发消息到所有绑定队列<h3 id="Direct-Exchange"><a href="#Direct-Exchange" class="headerlink" title="Direct Exchange"></a>Direct Exchange</h3>Direct Exchange是RabbitMQ默认的交换机模式，也是最简单的模式，根据key全文匹配去寻找队列<br>当消息中的路由键与交换机中的binding key全文匹配上时，才会转发到对应的队列中<h3 id="Topic-Exchange"><a href="#Topic-Exchange" class="headerlink" title="Topic Exchange"></a>Topic Exchange</h3>转发消息主要是根据通配符<br>在这种交换机模式下：</li>
-<li>路由键必须是一串字符，用句号（<code>.</code>） 隔开，比如说 agreements.us，或者 agreements.eu.stockholm 等</li>
-<li>路由模式必须包含一个 星号（<code>*</code>），主要用于匹配路由键指定位置的一个单词，比如说，一个路由模式是这样子：agreements..b.*，那么就只能匹配路由键是这样子的：第一个单词是 agreements，第三个单词是 b。 井号（#）就表示相当于一个或者多个单词，例如一个匹配模式是agreements.eu.berlin.#，那么，以agreements.eu.berlin开头的路由键都是可以的<br>topic 和 direct 类似, 只是匹配上支持了”模式”, 在”点分”的 routing_key 形式中, 可以使用两个通配符:</li>
-<li><code>*</code>表示一个词</li>
-<li><code>#</code>表示零个或多个词<h3 id="Headers-Exchange"><a href="#Headers-Exchange" class="headerlink" title="Headers Exchange"></a>Headers Exchange</h3>headers 也是根据规则匹配, 相较于 direct 和 topic 固定地使用 routing_key , headers 则是一个自定义匹配规则的类型. 在队列与交换器绑定时, 会设定一组键值对规则, 消息中也包括一组键值对( headers 属性), 当这些键值对有一对, 或全部匹配时, 消息被投送到对应队列<h3 id="Fanout-Exchange"><a href="#Fanout-Exchange" class="headerlink" title="Fanout Exchange"></a>Fanout Exchange</h3>Fanout Exchange 消息广播的模式，不管路由键或者是路由模式，会把消息发给绑定给它的全部队列，如果配置了routing_key会被忽略</li>
+<li>src/main/java 程序开发以及主程序入口</li>
+<li>src/main/resources 配置文件</li>
+<li><p>src/test/java 测试程序</p>
+<h3 id="Spring-Boot建议目录："><a href="#Spring-Boot建议目录：" class="headerlink" title="Spring Boot建议目录："></a>Spring Boot建议目录：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">com</span><br><span class="line">+- example</span><br><span class="line">    +- myproject</span><br><span class="line">    +- Application.java</span><br><span class="line">    |</span><br><span class="line">    +- domain</span><br><span class="line">    |  +- Customer.java</span><br><span class="line">    |  +- CustomerRepository.java</span><br><span class="line">    |</span><br><span class="line">    +- service</span><br><span class="line">    |  +- CustomerService.java</span><br><span class="line">    |</span><br><span class="line">    +- controller</span><br><span class="line">    |  +- CustomerController.java</span><br><span class="line">    |</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Application.java 建议放到根目录下面,主要用于做一些框架配置</p>
+</li>
+<li>domain目录主要用于实体（Entity）与数据访问层（Repository）</li>
+<li>service 层主要是业务类代码</li>
+<li><p>controller 负责页面访问控制</p>
+<h2 id="引入Web模块-快速搭建Web"><a href="#引入Web模块-快速搭建Web" class="headerlink" title="引入Web模块(快速搭建Web)"></a>引入Web模块(快速搭建Web)</h2><p>在pom.xml中添加支持Web的模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>pom.xml具有两个默认模块：</p>
+<ul>
+<li><code>spring-boot-starter</code> ：核心模块，包括自动配置支持、日志和YAML</li>
+<li><code>spring-boot-starter-test</code> ：测试模块，包括JUnit、HamcrestMockito</li>
 </ul>
-<h2 id="待补充Spring-boot上的集成"><a href="#待补充Spring-boot上的集成" class="headerlink" title="(待补充Spring boot上的集成)"></a>(待补充Spring boot上的集成)</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/RabbitMQ/" data-id="cjoset0e00000ywu1bdrsrx5y" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring Data Jpade 使用" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/22/Spring Data Jpade 使用/" class="article-date">
-  <time datetime="2018-11-21T16:00:00.000Z" itemprop="datePublished">2018-11-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/22/Spring Data Jpade 使用/">Spring Date Jpa的使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Jpa"><a href="#Jpa" class="headerlink" title="Jpa"></a>Jpa</h2><p>JPA(Java Persistence API)是Sun官方提出的Java持久化规范。它为Java开发人员提供了一种对象/关联映射工具来管理Java应用中的关系数据。他的出现主要是为了简化现有的持久化开发工作和整合ORM技术，结束现在Hibernate，TopLink，JDO等ORM框架各自为营的局面。值得注意的是，JPA是在充分吸收了现有Hibernate，TopLink，JDO等ORM框架的基础上发展而来的，具有易于使用，伸缩性强等优点。从目前的开发社区的反应上看，JPA受到了极大的支持和赞扬，其中就包括了Spring与EJB3.0的开发团队<br>JPA是一套规范，不是一套产品，那么像Hibernate,TopLink,JDO他们是一套产品，如果说这些产品实现了这个JPA规范，那么我们就可以叫他们为JPA的实现产品</p>
-<h3 id="Spring-Data-Jpa"><a href="#Spring-Data-Jpa" class="headerlink" title="Spring Data Jpa"></a>Spring Data Jpa</h3><p>Spring Data JPA 是 Spring 基于 ORM 框架、JPA 规范的基础上封装的一套JPA应用框架，可使开发者用极简的代码即可实现对数据的访问和操作。它提供了包括增删改查等在内的常用功能，且易于扩展！学习并使用 Spring Data JPA 可以极大提高开发效率<br>解脱了DAO层的操作，基本上所有CRUD都可以依赖于它来实现</p>
-<h2 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h2><p>一种是spring data默认已经实现，一种是根据查询的方法来自动解析成SQL<br>默认实现的方法：</p>
-<ol>
-<li>继承JpaRepository<br><code>public interface UserRepository extends JpaRepository&lt;User, Long&gt;{}</code></li>
-<li>默认方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testBaseQuery() throws Exception &#123;</span><br><span class="line">	User user=new User();</span><br><span class="line">	userRepository.findAll();</span><br><span class="line">	userRepository.findOne(1l);</span><br><span class="line">	userRepository.save(user);</span><br><span class="line">	userRepository.delete(user);</span><br><span class="line">	userRepository.count();</span><br><span class="line">	userRepository.exists(1l);</span><br><span class="line">	// ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="编写Controller内容"><a href="#编写Controller内容" class="headerlink" title="编写Controller内容"></a>编写Controller内容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">public class HelloWorldController &#123;</span><br><span class="line">    @RequestMapping(&quot;/hello&quot;)</span><br><span class="line">    public String index() &#123;</span><br><span class="line">        return &quot;Hello World&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<h2 id="自定义简单查询"><a href="#自定义简单查询" class="headerlink" title="自定义简单查询"></a>自定义简单查询</h2><p>根据方法名自动生成Sql，主要语法<code>findXXBy,readAXXBy,queryXXBy,countXXBy, getXXBy</code>后面跟属性名称<br><code>User findByUserName(String userName);</code><br>可以加一些关键字<code>And、 Or</code><br><code>User findByUserNameOrEmail(String username, String email);</code><br>修改、删除和统计也类似<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Long deleteById(Long id);</span><br><span class="line">Long countByUserName(String userName)</span><br></pre></td></tr></table></figure></p>
-<p>基本上Sql体系中的关键词都可以用，例如<code>LIKE、 IgnoreCase、 OrderBy</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; findByEmailLike(String email);</span><br><span class="line">User findByUserNameIgnoreCase(String userName);</span><br><span class="line">List&lt;User&gt; findByUserNameOrderByEmailDesc(String email);</span><br></pre></td></tr></table></figure></p>
-<p>具体关键字，使用方法和生成Sql可以参考<br>(<a href="http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html" target="_blank" rel="noopener">http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html</a>)</p>
-<h2 id="复杂查询"><a href="#复杂查询" class="headerlink" title="复杂查询"></a>复杂查询</h2><h3 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h3><p>查询的方法中，需要传入参数Pageable ,当查询中有多个参数的时候Pageable建议做为最后一个参数传入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;User&gt; findALL(Pageable pageable);</span><br><span class="line">Page&lt;User&gt; findByUserName(String userName,Pageable pageable);</span><br></pre></td></tr></table></figure></p>
-<p>Pageable 是spring封装的分页实现类，使用的时候需要传入页数、每页条数和排序规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testPageQuery() throws Exception &#123;</span><br><span class="line">	int page=1,size=10;</span><br><span class="line">	Sort sort = new Sort(Direction.DESC, &quot;id&quot;);</span><br><span class="line">    Pageable pageable = new PageRequest(page, size, sort);</span><br><span class="line">    userRepository.findALL(pageable);</span><br><span class="line">    userRepository.findByUserName(&quot;testName&quot;, pageable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="限制查询"><a href="#限制查询" class="headerlink" title="限制查询"></a>限制查询</h3><p>有时候我们只需要查询前N个元素，或者支取前一个实体<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ser findFirstByOrderByLastnameAsc();</span><br><span class="line">User findTopByOrderByAgeDesc();</span><br><span class="line">Page&lt;User&gt; queryFirst10ByLastname(String lastname, Pageable pageable);</span><br><span class="line">List&lt;User&gt; findFirst10ByLastname(String lastname, Sort sort);</span><br><span class="line">List&lt;User&gt; findTop10ByLastname(String lastname, Pageable pageable);</span><br></pre></td></tr></table></figure></p>
-<h3 id="自定义Sql查询"><a href="#自定义Sql查询" class="headerlink" title="自定义Sql查询"></a>自定义Sql查询</h3><p>在SQL的查询方法上面使用<code>@Query</code>注解，如涉及到删除和修改在需要加上<code>@Modifying</code>也可以根据需要添加<code>@Transactional</code>对事物的支持，查询超时的设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Modifying</span><br><span class="line">@Query(&quot;update User u set u.userName = ?1 where u.id = ?2&quot;)</span><br><span class="line">int modifyByIdAndUserId(String  userName, Long id);</span><br><span class="line">	</span><br><span class="line">@Transactional</span><br><span class="line">@Modifying</span><br><span class="line">@Query(&quot;delete from User where id = ?1&quot;)</span><br><span class="line">void deleteByUserId(Long id);</span><br><span class="line">  </span><br><span class="line">@Transactional(timeout = 10)</span><br><span class="line">@Query(&quot;select u from User u where u.emailAddress = ?1&quot;)</span><br><span class="line">User findByEmailAddress(String emailAddress);</span><br></pre></td></tr></table></figure></p>
-<h3 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h3><p>多表查询在spring data jpa中有两种实现方式，第一种是利用hibernate的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里主要第二种方式</p>
-<ol>
-<li>定义一个结果集的接口类<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public interface HotelSummary &#123;</span><br><span class="line"></span><br><span class="line">	City getCity();</span><br><span class="line"></span><br><span class="line">	String getName();</span><br><span class="line"></span><br><span class="line">	Double getAverageRating();</span><br><span class="line"></span><br><span class="line">	default Integer getAverageRatingRounded() &#123;</span><br><span class="line">		return getAverageRating() == null ? null : (int) Math.round(getAverageRating());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>查询的方法返回类型设置为新创建的接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Query(&quot;select h.city as city, h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r where h.city = ?1 group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(City city, Pageable pageable);</span><br><span class="line"></span><br><span class="line">@Query(&quot;select h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r  group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(Pageable pageable);</span><br></pre></td></tr></table></figure></p>
-<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;HotelSummary&gt; hotels = this.hotelRepository.findByCity(new PageRequest(0, 10, Direction.ASC, &quot;name&quot;));</span><br><span class="line">for(HotelSummary summay:hotels)&#123;</span><br><span class="line">		System.out.println(&quot;Name&quot; +summay.getName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在运行中Spring会给接口（HotelSummary）自动生产一个代理类来接收返回的结果，代码汇总使用getXX的形式来获取</p>
-<h2 id="多数据源的支持"><a href="#多数据源的支持" class="headerlink" title="多数据源的支持"></a>多数据源的支持</h2><ol>
-<li>配置多数据源</li>
-<li>不同源的实体类放入不同包路径</li>
-<li>声明不同的包路径下使用不同的数据源、事务支持<h3 id="异构数据库多远支持"><a href="#异构数据库多远支持" class="headerlink" title="异构数据库多远支持"></a>异构数据库多远支持</h3>对mysql的支持，也需要对mongodb的查询<br>实体类声明@Entity 关系型数据库支持类型、声明@Document 为mongodb支持类型，不同的数据源使用不同的实体就可以了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">interface PersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface UserRepository extends Repository&lt;User, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Document</span><br><span class="line">public class User &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>但是，如果User用户既使用mysql也使用mongodb呢，也可以做混合使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface JpaPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface MongoDBPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">@Document</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>也可以通过对不同的包路径进行声明，比如A包路径下使用mysql,B包路径下使用mongoDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@EnableJpaRepositories(basePackages = &quot;com.neo.repositories.jpa&quot;)</span><br><span class="line">@EnableMongoRepositories(basePackages = &quot;com.neo.repositories.mongo&quot;)</span><br><span class="line">interface Configuration &#123; &#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="使用枚举"><a href="#使用枚举" class="headerlink" title="使用枚举"></a>使用枚举</h3><p>使用枚举的时候，我们希望数据库中存储的是枚举对应的String类型，而不是枚举的索引值，需要在属性上面添加<code>@Enumerated(EnumType.STRING)</code>注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Enumerated(EnumType.STRING) </span><br><span class="line">@Column(nullable = true)</span><br><span class="line">private UserType type;</span><br></pre></td></tr></table></figure></p>
-<h3 id="不需要和数据库映射的属性"><a href="#不需要和数据库映射的属性" class="headerlink" title="不需要和数据库映射的属性"></a>不需要和数据库映射的属性</h3><p>正常情况下我们在实体类上加入注解<code>@Entity</code>，就会让实体类和表相关连如果其中某个属性我们不需要和数据库来关联只是在展示的时候做计算，只需要加上<code>@Transient</code>属性既可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Transient</span><br><span class="line">private String  userName;</span><br></pre></td></tr></table></figure></p>
+</ul>
+<p><code>@RestController</code> 就是Controller里的方法都按照json格式输出，无需再写jackjson配置<br><code>@ResquestMapping</code> 是请求拦截<br>启动程序，localhost:8080/hello，即看到效果</p>
+<h2 id="开发环境的配置"><a href="#开发环境的配置" class="headerlink" title="开发环境的配置"></a>开发环境的配置</h2><p>热部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">&lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/Spring Data Jpade 使用/" data-id="cjoset0ef0002ywu10ve8vxhp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/21/Spring-Boot入门/" data-id="cjp9jue7u000a50u1l91o40md" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -814,73 +879,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/21/Web综合开发/" data-id="cjorwj95w00005gu131w3qzso" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Boot入门" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/21/Spring-Boot入门/" class="article-date">
-  <time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished">2018-11-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/21/Spring-Boot入门/">Spring boot快速入门构建</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Spring-Boot简介"><a href="#Spring-Boot简介" class="headerlink" title="Spring Boot简介"></a>Spring Boot简介</h2><p>Spring Boot 集合Maven快速配置项目所需要的开发环境的框架。</p>
-<hr>
-<p>Maven构建入口：(<a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io/</a>)</p>
-<hr>
-<h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><p>三个基础文件</p>
-<ul>
-<li>src/main/java 程序开发以及主程序入口</li>
-<li>src/main/resources 配置文件</li>
-<li><p>src/test/java 测试程序</p>
-<h3 id="Spring-Boot建议目录："><a href="#Spring-Boot建议目录：" class="headerlink" title="Spring Boot建议目录："></a>Spring Boot建议目录：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">com</span><br><span class="line">+- example</span><br><span class="line">    +- myproject</span><br><span class="line">    +- Application.java</span><br><span class="line">    |</span><br><span class="line">    +- domain</span><br><span class="line">    |  +- Customer.java</span><br><span class="line">    |  +- CustomerRepository.java</span><br><span class="line">    |</span><br><span class="line">    +- service</span><br><span class="line">    |  +- CustomerService.java</span><br><span class="line">    |</span><br><span class="line">    +- controller</span><br><span class="line">    |  +- CustomerController.java</span><br><span class="line">    |</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Application.java 建议放到根目录下面,主要用于做一些框架配置</p>
-</li>
-<li>domain目录主要用于实体（Entity）与数据访问层（Repository）</li>
-<li>service 层主要是业务类代码</li>
-<li><p>controller 负责页面访问控制</p>
-<h2 id="引入Web模块-快速搭建Web"><a href="#引入Web模块-快速搭建Web" class="headerlink" title="引入Web模块(快速搭建Web)"></a>引入Web模块(快速搭建Web)</h2><p>在pom.xml中添加支持Web的模块：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-<p>pom.xml具有两个默认模块：</p>
-<ul>
-<li><code>spring-boot-starter</code> ：核心模块，包括自动配置支持、日志和YAML</li>
-<li><code>spring-boot-starter-test</code> ：测试模块，包括JUnit、HamcrestMockito</li>
-</ul>
-<h2 id="编写Controller内容"><a href="#编写Controller内容" class="headerlink" title="编写Controller内容"></a>编写Controller内容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">public class HelloWorldController &#123;</span><br><span class="line">    @RequestMapping(&quot;/hello&quot;)</span><br><span class="line">    public String index() &#123;</span><br><span class="line">        return &quot;Hello World&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><code>@RestController</code> 就是Controller里的方法都按照json格式输出，无需再写jackjson配置<br><code>@ResquestMapping</code> 是请求拦截<br>启动程序，localhost:8080/hello，即看到效果</p>
-<h2 id="开发环境的配置"><a href="#开发环境的配置" class="headerlink" title="开发环境的配置"></a>开发环境的配置</h2><p>热部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">&lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/21/Spring-Boot入门/" data-id="cjorwj96400035gu1kpcq6103" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/21/Web综合开发/" data-id="cjp9jue82000f50u10xtchxvk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -941,11 +940,11 @@
           </li>
         
           <li>
-            <a href="/2018/11/29/Mybatis3.4.7-configuration配置/">Mybatis3.4.7configuration配置文件</a>
+            <a href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
           </li>
         
           <li>
-            <a href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
+            <a href="/2018/11/29/Mybatis3.4.7-configuration配置/">Mybatis3.4.7configuration配置文件</a>
           </li>
         
           <li>
@@ -953,7 +952,7 @@
           </li>
         
           <li>
-            <a href="/2018/11/22/thymeleaf使用详解/">Thymeleaf使用详解</a>
+            <a href="/2018/11/22/RabbitMQ/">RabbitMQ</a>
           </li>
         
       </ul>

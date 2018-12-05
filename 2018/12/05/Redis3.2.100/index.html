@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spring Boot集成Redis | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API 安装因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(https://github.com/dmajkic/redis/downloads) 启动启动服务器：redis-servser.exe red">
+<meta name="keywords" content="笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot集成Redis">
+<meta property="og:url" content="http://yoursite.com/2018/12/05/Redis3.2.100/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API 安装因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(https://github.com/dmajkic/redis/downloads) 启动启动服务器：redis-servser.exe red">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-05T07:38:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Boot集成Redis">
+<meta name="twitter:description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API 安装因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(https://github.com/dmajkic/redis/downloads) 启动启动服务器：redis-servser.exe red">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Redis3.2.100" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/05/Redis3.2.100/" class="article-date">
+  <time datetime="2018-12-04T16:00:00.000Z" itemprop="datePublished">2018-12-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring Boot集成Redis
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(<a href="https://github.com/dmajkic/redis/downloads" target="_blank" rel="noopener">https://github.com/dmajkic/redis/downloads</a>)</p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>启动服务器：<code>redis-servser.exe redis.windows.conf</code><br>开启客户机：<code>redis-cli</code></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p><code>redis 127.0.0.1:6379&gt; CONFIG GET CONFIG_SETTING_NAME</code><br><code>redis 127.0.0.1:6379&gt; CONFIG GET *</code>获取所有配置项<br>其他命令与数据类型参考：(<a href="http://www.redis.net.cn/tutorial/3503.html" target="_blank" rel="noopener">http://www.redis.net.cn/tutorial/3503.html</a>)</p>
+<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><p>添加依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>添加properties配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.database=0</span><br><span class="line">spring.redis.host=127.0.0.1</span><br><span class="line">spring.redis.port=6379</span><br><span class="line">spring.redis.jedis.pool.max-active=8</span><br><span class="line">spring.redis.jedis.pool.max-idle=8</span><br><span class="line">spring.redis.lettuce.pool.min-idle=0</span><br><span class="line">spring.cache.cache-names=cache1,cache2 //可能仅仅只需要添加这个配置，若在本地测试的话</span><br></pre></td></tr></table></figure></p>
+<p>Controller代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/test&quot;)</span><br><span class="line">    public String test()&#123;</span><br><span class="line">        DemoInfo loaded = service.findById(1);</span><br><span class="line">        System.out.println(&quot;loaded=&quot;+loaded);</span><br><span class="line">        DemoInfo cached = service.findById(1);</span><br><span class="line">        System.out.println(&quot;cached=&quot;+cached);</span><br><span class="line">        loaded = service.findById(2);</span><br><span class="line">        System.out.println(&quot;loaded2=&quot;+loaded);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里执行了两次一样的查询，一次新的查询(会在结果中体现出来)<br>Service代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class DemoInfoServiceImpl implements DemoInfoService &#123;</span><br><span class="line">    @Resource(name = &quot;demoInfoRepository&quot;)</span><br><span class="line">    private DemoInfoRepository repository;</span><br><span class="line"></span><br><span class="line">    @Qualifier(&quot;stringRedisTemplate&quot;)</span><br><span class="line">    @Autowired</span><br><span class="line">    private StringRedisTemplate template;</span><br><span class="line"></span><br><span class="line">    @Cacheable(keyGenerator = &quot;myKeyGenerator&quot;, value = &quot;demoInfoCache&quot;) //缓存,这里没有指定key</span><br><span class="line">    @Override</span><br><span class="line">    public DemoInfo findById(int id) &#123;</span><br><span class="line">        System.out.println(&quot;DemoInfoServiceImpl.findById()=========从数据库中进行获取的....id=&quot;+id);</span><br><span class="line">        return repository.findDemoInfoById(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void test() &#123;</span><br><span class="line">        ValueOperations&lt;String,String&gt; valueOperations = template.opsForValue();</span><br><span class="line">        valueOperations.set(&quot;mykey&quot;,&quot;random&quot;);</span><br><span class="line">        System.out.println(valueOperations.get(&quot;demoInfo&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>@Qualifier</code>这里指定注入的类型，StringRedisTemplate是RedisTemplate的子类，注入那个都行<br>利用template api对Redis进行操作<br><code>@Cacheable</code>注解在这里声明<code>Spring</code> 会将该方法的返回参数进行缓存，通过判断<code>key</code>是否存在, 如果存在则直接返回缓存中的数据<br>参数：</p>
+<ul>
+<li>value: 缓存的名称. 至少需要指定一个</li>
+<li>key: 存放到Redis中, K-V对的K，可以缺省, 缺省的话Spring会使用参数名称加参数值的形式作为K. 一般情况下这种情况没有问题, 可是当其他方法的参数名和参数值一样时, 这种方法就不是那么可靠了. 所以key建议自己重新指定<br>例子中的Key指定了自定义的生成器，稍后会贴<br><code>@CachePut</code>一般放置在更新函数中. 与<code>@Cacheable</code>不同的是不管key在Redis是否存在都会将返回结果进行缓存<br><code>@CacheEvict</code> 用来清除缓存<br><code>@CacheConfig</code> 如果每次都需要@<code>Cacheable @CachePut @CacheEvict</code>为指定同一个<code>value</code>那会显得比较麻烦. 使用<code>@Cacheing</code>可以统一为该类中的@Cache<em>注解指定<code>value</code> <code>keyGenerator</code>等注解<br>@Cache</em> 注解可用于任何方法，不局限于Service层中，在网上见过例子用于Repository中<br>Repository代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Repository(&quot;demoInfoRepository&quot;)</span><br><span class="line">public interface DemoInfoRepository extends JpaRepository&lt;DemoInfo, Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">    DemoInfo findDemoInfoById(int id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>根据id查询<br>Key生成器实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component(&quot;myKeyGenerator&quot;)</span><br><span class="line">public class MyKeyGenerator implements KeyGenerator &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">        System.out.println(&quot;KeyGenerator()&quot;);</span><br><span class="line"></span><br><span class="line">        StringBuilder sb = new StringBuilder();</span><br><span class="line">        sb.append(target.getClass().getName());</span><br><span class="line">        sb.append(method.getName());</span><br><span class="line">        for (Object o : params)&#123;</span><br><span class="line">            sb.append(o.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;keyGenerator=&quot; + sb.toString());</span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要实现<code>KeyGenerator</code>接口<br>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">loaded=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">cached=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById2</span><br><span class="line">loaded2=id=2 name=李四 password=45678</span><br></pre></td></tr></table></figure></p>
+<p>因为之前已进行过运行，redis存在缓存数据<br>实际上第一次查询时会输出”从数据库中获取”(在Service层中体现)<br>第二次进行一样的查询因为在redis中已存在相同的key，所以直接从缓存中获取，并不调用service方法<br>第三次查询时新的查询，缓存中不存在，所以会输出”从数据库中获取”</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjpav599c0000you1g5zgraia" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/12/05/RabbitMQ/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">RabbitMQ</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/笔记/" style="font-size: 10px;">笔记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/12/05/Redis3.2.100/">Spring Boot集成Redis</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/05/RabbitMQ/">RabbitMQ</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/29/Mybatis3.4.7-configuration配置/">Mybatis3.4.7configuration配置文件</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -5,17 +5,17 @@
   
 
   
-  <title>Hexo</title>
+  <title>Panzihua_Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="Panzihua_Blog">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Panzihua_Blog">
 <meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Panzihua_Blog">
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="Panzihua_Blog" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -34,7 +34,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">Panzihua_Blog</a>
       </h1>
       
     </div>
@@ -105,7 +105,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjpav599c0000you1g5zgraia" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjpav75m30000qku1gkq3nppr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -179,66 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjpav59a0000eyou11g4nklcd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring Boot集成Mybatis过程" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/29/Spring Boot集成Mybatis过程/" class="article-date">
-  <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li>新建Spring Boot项目，勾选Mybatis支持</li>
-<li>application.properties添加相应配置(或者在手动在pom.xml添加依赖)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.3.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.type-aliases-package=com.example.demo.myDemo.domin</span><br><span class="line">mybatis.configuration.use-generated-keys=true</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
-<p>主要是配置mapper.xml文件的位置，容器的位置<br>此处附上thymeleaf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.thymeleaf.prefix=classpath:/Student/</span><br><span class="line">spring.thymeleaf.mode=LEGACYHTML5</span><br><span class="line">spring.thymeleaf.suffix=.html</span><br><span class="line">spring.thymeleaf.encoding=UTF-8</span><br><span class="line">spring.thymeleaf.servlet.content-type=text/html</span><br><span class="line">spring.thymeleaf.cache=false</span><br><span class="line">spring.resources.chain.strategy.content.enabled=true</span><br><span class="line">spring.resources.chain.strategy.content.paths=/**</span><br><span class="line">#thymeleaf end</span><br></pre></td></tr></table></figure></p>
-<ol start="3">
-<li>在应用启动入口xxxxApplication.class加上@MapperScan(“包名”)。<br>主要用意在于告诉spring，dao层接口在哪<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@MapperScan(&quot;com.example.demo.myDemo.domin&quot;)</span><br><span class="line">public class DemoApplication extends SpringBootServletInitializer &#123;</span><br><span class="line">	@Override</span><br><span class="line">	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;</span><br><span class="line">		return builder.sources(DemoApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><ol>
-<li>每个mapper.xml文件对应一个dao层接口，这是用mapper标签的namespace属性所决定的</li>
-<li>Mybatis是面向SQL语句的框架，不要用Hibernate面向对象的思想去用它,要用SQL语句最简单的思维，比如查询到的外键可以说不是什么关系映射，它就是一个简简单单的一个列的一个值，所以数据容器可以只用基本数据类型去容纳它</li>
-<li><p>关于select标签的association子标签，若只是嵌套结果的用法，可以很简单的当成只是把一部分结果放进一个应用的对象中甚至不需要用association，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;studentResultMap&quot; type=&quot;Student&quot;&gt;</span><br><span class="line">        &lt;id property=&quot;sId&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sName&quot; column=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sAge&quot; column=&quot;age&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sSex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">        &lt;!--&lt;association property=&quot;myclass&quot; column=&quot;classid&quot; javaType=&quot;MyClass&quot; select=&quot;selectClass&quot; /&gt;--&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cId&quot; column=&quot;classid&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cName&quot; column=&quot;classname&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>不需要mybatis-config.xml文件，需要配置的属性已经在application.xml中有了</p>
-</li>
-<li>不需要配置事务管理器，Spring Boot中有默认的实现，就算配置了也会被Spring Boot的配置覆盖</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjpav599g0001you1zv44q5wr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjpav75mr000eqku1m9rfzf0v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -299,7 +240,66 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjpav599m0005you158f3vjql" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjpav75m70001qku1p1fb3zls" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring Boot集成Mybatis过程" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/29/Spring Boot集成Mybatis过程/" class="article-date">
+  <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>新建Spring Boot项目，勾选Mybatis支持</li>
+<li>application.properties添加相应配置(或者在手动在pom.xml添加依赖)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.3.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.type-aliases-package=com.example.demo.myDemo.domin</span><br><span class="line">mybatis.configuration.use-generated-keys=true</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
+<p>主要是配置mapper.xml文件的位置，容器的位置<br>此处附上thymeleaf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.thymeleaf.prefix=classpath:/Student/</span><br><span class="line">spring.thymeleaf.mode=LEGACYHTML5</span><br><span class="line">spring.thymeleaf.suffix=.html</span><br><span class="line">spring.thymeleaf.encoding=UTF-8</span><br><span class="line">spring.thymeleaf.servlet.content-type=text/html</span><br><span class="line">spring.thymeleaf.cache=false</span><br><span class="line">spring.resources.chain.strategy.content.enabled=true</span><br><span class="line">spring.resources.chain.strategy.content.paths=/**</span><br><span class="line">#thymeleaf end</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>在应用启动入口xxxxApplication.class加上@MapperScan(“包名”)。<br>主要用意在于告诉spring，dao层接口在哪<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@MapperScan(&quot;com.example.demo.myDemo.domin&quot;)</span><br><span class="line">public class DemoApplication extends SpringBootServletInitializer &#123;</span><br><span class="line">	@Override</span><br><span class="line">	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;</span><br><span class="line">		return builder.sources(DemoApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><ol>
+<li>每个mapper.xml文件对应一个dao层接口，这是用mapper标签的namespace属性所决定的</li>
+<li>Mybatis是面向SQL语句的框架，不要用Hibernate面向对象的思想去用它,要用SQL语句最简单的思维，比如查询到的外键可以说不是什么关系映射，它就是一个简简单单的一个列的一个值，所以数据容器可以只用基本数据类型去容纳它</li>
+<li><p>关于select标签的association子标签，若只是嵌套结果的用法，可以很简单的当成只是把一部分结果放进一个应用的对象中甚至不需要用association，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;studentResultMap&quot; type=&quot;Student&quot;&gt;</span><br><span class="line">        &lt;id property=&quot;sId&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sName&quot; column=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sAge&quot; column=&quot;age&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sSex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">        &lt;!--&lt;association property=&quot;myclass&quot; column=&quot;classid&quot; javaType=&quot;MyClass&quot; select=&quot;selectClass&quot; /&gt;--&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cId&quot; column=&quot;classid&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cName&quot; column=&quot;classname&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不需要mybatis-config.xml文件，需要配置的属性已经在application.xml中有了</p>
+</li>
+<li>不需要配置事务管理器，Spring Boot中有默认的实现，就算配置了也会被Spring Boot的配置覆盖</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjpav75ma0003qku1h39b2ioq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -406,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjpav599z000dyou1py87p7g0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjpav75mq000dqku1kiww3731" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -617,7 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjpav59as000lyou1iso9ipm4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjpav75nb000lqku1yjwdpxn1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -688,7 +688,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/Spring Data Jpade 使用/" data-id="cjpav599j0003you1445gryyq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/22/Spring Data Jpade 使用/" data-id="cjpav75mc0005qku12j80is28" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -804,7 +804,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/thymeleaf使用详解/" data-id="cjpav59a3000iyou15nvnp77y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/22/thymeleaf使用详解/" data-id="cjpav75ms000gqku11hen8h7l" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -870,7 +870,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/21/Spring-Boot入门/" data-id="cjpav599k0004you1feacloe4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/21/Spring-Boot入门/" data-id="cjpav75mb0004qku1jh11zbjp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -955,7 +955,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/21/Web综合开发/" data-id="cjpav59a1000gyou1qbhjgn8t" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/21/Web综合开发/" data-id="cjpav75mu000iqku1ta39htt2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -1020,11 +1020,11 @@
           </li>
         
           <li>
-            <a href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
+            <a href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
           </li>
         
           <li>
-            <a href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
+            <a href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
           </li>
         
           <li>

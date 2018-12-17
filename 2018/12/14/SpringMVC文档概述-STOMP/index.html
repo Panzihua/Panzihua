@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>SpringMVC-文档搬运工 STOMP | Panzihua_Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="简介WebSocket是一种全双工通信，而SockJS为它提供了浏览器兼容(某些浏览器不支持WebSocket，所以SockJS为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型而STOMP就是传输的简单数据协议 STOMP原理与过程 首先在服务器端通过Config类注册前缀(app目的地前缀、简单中继器前缀和升级WebSoc">
+<meta name="keywords" content="笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMVC-文档搬运工 STOMP">
+<meta property="og:url" content="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/index.html">
+<meta property="og:site_name" content="Panzihua_Blog">
+<meta property="og:description" content="简介WebSocket是一种全双工通信，而SockJS为它提供了浏览器兼容(某些浏览器不支持WebSocket，所以SockJS为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型而STOMP就是传输的简单数据协议 STOMP原理与过程 首先在服务器端通过Config类注册前缀(app目的地前缀、简单中继器前缀和升级WebSoc">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-17T02:37:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringMVC-文档搬运工 STOMP">
+<meta name="twitter:description" content="简介WebSocket是一种全双工通信，而SockJS为它提供了浏览器兼容(某些浏览器不支持WebSocket，所以SockJS为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型而STOMP就是传输的简单数据协议 STOMP原理与过程 首先在服务器端通过Config类注册前缀(app目的地前缀、简单中继器前缀和升级WebSoc">
+  
+    <link rel="alternate" href="/atom.xml" title="Panzihua_Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Panzihua_Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SpringMVC文档概述-STOMP" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/14/SpringMVC文档概述-STOMP/" class="article-date">
+  <time datetime="2018-12-13T16:00:00.000Z" itemprop="datePublished">2018-12-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringMVC-文档搬运工 STOMP
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>WebSocket是一种全双工通信，而SockJS为它提供了浏览器兼容(某些浏览器不支持WebSocket，所以SockJS为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型<br>而STOMP就是传输的简单数据协议</p>
+<h2 id="STOMP原理与过程"><a href="#STOMP原理与过程" class="headerlink" title="STOMP原理与过程"></a>STOMP原理与过程</h2><ul>
+<li>首先在服务器端通过Config类注册前缀(app目的地前缀、简单中继器前缀和升级WebSocket请求)<ul>
+<li>这些前缀是告诉服务器如何处理这些请求</li>
+<li>app目的地前缀：通过Controller@MesageMapping或@SubscribeMapping最终转发到中继器或者变成点对点通信，一般是转发到消息中继器(亦可以说是Spring Boot内部中间件的简单实现)</li>
+<li>简单的中继器前缀：符合中继器前缀的请求都进入中继器然后去掉前缀，看匹配上那个路由键，就触发中继器发布订阅信息</li>
+<li>升级WebSockety请求：升级过程完全封装，无需理会，只需定义。其过程就是客户端发送的请求头中带有Upgrade: websocket，Connection: Upgrade等发起WebSocket连接</li>
+</ul>
+</li>
+<li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
+<li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
+<li>而当客户端发送戴欧app目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个Hadnler，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，WebScoket的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br>WebSocket原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档</a><br>简单例子(<a href="https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网</a> </li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjprpnxr300069wu1tx45z4rh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/12/14/SpringMVC文档概述-异步请求/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SpringMVC-文档搬运工 异步请求</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/笔记/" style="font-size: 10px;">笔记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/13/SpringMVC文档概述-Controller相关/">SpringMVC-文档搬运工 Controller相关</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/">SpringMVC-文档搬运工 DispatcherServlet和Filters</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/05/Redis3.2.100/">Spring Boot集成Redis</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Panzihua<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

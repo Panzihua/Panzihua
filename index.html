@@ -95,13 +95,13 @@
 </li>
 <li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
 <li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
-<li>而当客户端发送戴欧app目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个Hadnler，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，WebScoket的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br>WebSocket原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档</a><br>简单例子(<a href="https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网</a> </li>
+<li>而当客户端发送戴欧app目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个Hadnler，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，WebScoket的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br>WebSocket原理(<a href="https://www.sohu.com/a/234426359_114819" target="_blank" rel="noopener">https://www.sohu.com/a/234426359_114819</a>)<br>图解(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档</a><br>简单例子(<a href="https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网</a> </li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjprpnxr300069wu1tx45z4rh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjprxusrj0005i4u1cy2yhlal" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -157,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-异步请求/" data-id="cjprpnxr400089wu1nel9pw7l" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-异步请求/" data-id="cjprxusrn000ai4u1lnxkwnrf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -287,7 +287,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-Controller相关/" data-id="cjprpnxrv000p9wu1rb48ya3f" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-Controller相关/" data-id="cjprxusse000ri4u1dbo50gc2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -376,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/" data-id="cjprpnxre000j9wu1g9hg5z2w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/" data-id="cjprxuss0000ki4u1s78x3tts" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -431,7 +431,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjprpnxr000039wu1yuhjoxu0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjprxusre0001i4u18uhh20gv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -505,7 +505,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjprpnxra000g9wu1f3s3ovck" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjprxusry000ii4u1altqsuaa" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -612,7 +612,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjprpnxr8000e9wu1brih6ngw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjprxusrw000hi4u1yw3l4tr7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -673,7 +673,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjprpnxqj00009wu13ylkrefj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjprxusr90000i4u10kepa3br" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -732,7 +732,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjprpnxr100049wu15tvfit7x" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjprxusrh0003i4u1c42qlfzj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -943,7 +943,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjprpnxs1000r9wu1fodapows" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjprxussm000ti4u13aozo0ob" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>

@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Panzihua_Blog">
 <meta property="og:description" content="简介WebSocket是一种全双工通信，而SockJS为它提供了浏览器兼容(某些浏览器不支持WebSocket，所以SockJS为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型而STOMP就是传输的简单数据协议 STOMP原理与过程 首先在服务器端通过Config类注册前缀(app目的地前缀、简单中继器前缀和升级WebSoc">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-17T02:37:22.000Z">
+<meta property="og:updated_time" content="2018-12-17T06:28:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringMVC-文档搬运工 STOMP">
 <meta name="twitter:description" content="简介WebSocket是一种全双工通信，而SockJS为它提供了浏览器兼容(某些浏览器不支持WebSocket，所以SockJS为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型而STOMP就是传输的简单数据协议 STOMP原理与过程 首先在服务器端通过Config类注册前缀(app目的地前缀、简单中继器前缀和升级WebSoc">
@@ -98,13 +98,13 @@
 </li>
 <li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
 <li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
-<li>而当客户端发送戴欧app目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个Hadnler，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，WebScoket的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br>WebSocket原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档</a><br>简单例子(<a href="https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网</a> </li>
+<li>而当客户端发送戴欧app目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个Hadnler，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，WebScoket的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br>WebSocket原理(<a href="https://www.sohu.com/a/234426359_114819" target="_blank" rel="noopener">https://www.sohu.com/a/234426359_114819</a>)<br>图解(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow)来自MVC文档</a><br>简单例子(<a href="https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/)来自Spring官网</a> </li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjprpnxr300069wu1tx45z4rh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjprxusrj0005i4u1cy2yhlal" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>

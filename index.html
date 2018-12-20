@@ -96,58 +96,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/17/JS随手记/" data-id="cjpwc6y1u0000wku1ut64oj55" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-SpringMVC文档概述-STOMP" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/14/SpringMVC文档概述-STOMP/" class="article-date">
-  <time datetime="2018-12-13T16:00:00.000Z" itemprop="datePublished">2018-12-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>WebSocket</code>是一种全双工通信，而<code>SockJS</code>为它提供了浏览器兼容(某些浏览器不支持<code>WebSocket</code>，所以<code>SockJS</code>为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型<br>而STOMP就是传输的简单数据协议</p>
-<h2 id="STOMP原理与过程"><a href="#STOMP原理与过程" class="headerlink" title="STOMP原理与过程"></a>STOMP原理与过程</h2><ul>
-<li>首先在服务器端通过<code>Config</code>类注册前缀(<code>app</code>目的地前缀、简单中继器前缀和升级<code>WebSocket</code>请求)<ul>
-<li>这些前缀是告诉服务器如何处理这些请求</li>
-<li><code>app</code>目的地前缀：通过<code>Controller`</code>@MesageMapping<code>或</code>@SubscribeMapping`最终转发到中继器或者变成点对点通信，一般是转发到消息中继器(亦可以说是Spring Boot内部中间件的简单实现)</li>
-<li>简单的中继器前缀：符合中继器前缀的请求都进入中继器然后去掉前缀，看匹配上那个路由键，就触发中继器发布订阅信息</li>
-<li>升级<code>WebSocket</code>请求：升级过程完全封装，无需理会，只需定义。其过程就是客户端发送的请求头中带有<code>Upgrade: websocket</code>，<code>Connection: Upgrade</code>等发起<code>WebSocket</code>连接</li>
-</ul>
-</li>
-<li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
-<li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
-<li>而当客户端发送到<code>app</code>目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个<code>Hadnler</code>，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，<code>WebScoket</code>的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br><code>WebSocket</code>原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解来自MVC文档(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow</a>)<br>简单例子来自Spring官网 (<a href="https://spring.io/guides/gs/messaging-stomp-websocket/" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/</a>)</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjpwc6y2i000ewku1yychr3r3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/17/JS随手记/" data-id="cjpwccu0o00006ou10tjc42qg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -203,7 +152,58 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-异步请求/" data-id="cjpwc6y2j000gwku18g5wqwso" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-异步请求/" data-id="cjpwccu1e000g6ou1uru4241v" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SpringMVC文档概述-STOMP" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/14/SpringMVC文档概述-STOMP/" class="article-date">
+  <time datetime="2018-12-13T16:00:00.000Z" itemprop="datePublished">2018-12-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>WebSocket</code>是一种全双工通信，而<code>SockJS</code>为它提供了浏览器兼容(某些浏览器不支持<code>WebSocket</code>，所以<code>SockJS</code>为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型<br>而STOMP就是传输的简单数据协议</p>
+<h2 id="STOMP原理与过程"><a href="#STOMP原理与过程" class="headerlink" title="STOMP原理与过程"></a>STOMP原理与过程</h2><ul>
+<li>首先在服务器端通过<code>Config</code>类注册前缀(<code>app</code>目的地前缀、简单中继器前缀和升级<code>WebSocket</code>请求)<ul>
+<li>这些前缀是告诉服务器如何处理这些请求</li>
+<li><code>app</code>目的地前缀：通过<code>Controller</code>,<code>@MesageMapping</code>或<code>@SubscribeMapping</code>最终转发到中继器或者变成点对点通信，一般是转发到消息中继器(亦可以说是Spring Boot内部中间件的简单实现)</li>
+<li>简单的中继器前缀：符合中继器前缀的请求都进入中继器然后去掉前缀，看匹配上那个路由键，就触发中继器发布订阅信息</li>
+<li>升级<code>WebSocket</code>请求：升级过程完全封装，无需理会，只需定义。其过程就是客户端发送的请求头中带有<code>Upgrade: websocket</code>，<code>Connection: Upgrade</code>等发起<code>WebSocket</code>连接</li>
+</ul>
+</li>
+<li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
+<li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
+<li>而当客户端发送到<code>app</code>目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个<code>Hadnler</code>，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，<code>WebScoket</code>的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br><code>WebSocket</code>原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解来自MVC文档(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow</a>)<br>简单例子来自Spring官网 (<a href="https://spring.io/guides/gs/messaging-stomp-websocket/" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/</a>)</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjpwccu1d000e6ou1tpm3nwxr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -333,7 +333,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-Controller相关/" data-id="cjpwc6y38000rwku1s2q9kqdx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-Controller相关/" data-id="cjpwccu26000t6ou1u72g2htp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -422,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/" data-id="cjpwc6y2t000kwku1vska7c2d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/" data-id="cjpwccu1u000n6ou1okgufbgb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -496,7 +496,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjpwc6y2s000jwku1o35lllsm" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjpwccu1i000k6ou14cllt0zn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -551,7 +551,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjpwc6y2f000awku1odjfo5ci" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjpwccu0w00046ou1wvpgzesh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Mybatis3.4.7-动态SQL" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/29/Mybatis3.4.7-动态SQL/" class="article-date">
+  <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="元素"><a href="#元素" class="headerlink" title="元素"></a>元素</h2><ul>
+<li>if</li>
+<li>choose(when, otherwise)</li>
+<li>trim(where, set)</li>
+<li>foreach<h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2>动态 SQL 通常要做的事情是根据条件包含 <code>where</code> 子句的一部分。比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogWithTitleLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这条语句提供了一种可选的查找文本功能。如果没有传入<code>title</code>，那么所有处于<code>ACTIVE</code>状态的BLOG都会返回；反之若传入了<code>title</code>，那么就会对<code>title</code>一列进行模糊查找并返回 BLOG 结果（细心的读者可能会发现，<code>title</code>参数值是可以包含一些掩码或通配符的）<br>如果希望通过<code>title</code>和<code>author</code>两个参数进行可选搜索该怎么办呢？首先，改变语句的名称让它更具实际意义；然后只要加入另一个条件即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="choose-when-otherwise"><a href="#choose-when-otherwise" class="headerlink" title="choose, when, otherwise"></a>choose, when, otherwise</h2><p>有时我们不想应用到所有的条件语句，而只想从中择其一项。针对这种情况，MyBatis 提供了 <code>choose</code> 元素，它有点像 Java 中的 <code>switch</code> 语句<br>还是上面的例子，但是这次变为提供了<code>title</code>就按<code>title</code>查找，提供了<code>author</code>就按<code>author</code>查找的情形，若两者都没有提供，就返回所有符合条件的 BLOG（实际情况可能是由管理员按一定策略选出 BLOG 列表，而不是返回大量无意义的随机结果）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  &lt;choose&gt;</span><br><span class="line">    &lt;when test=&quot;title != null&quot;&gt;</span><br><span class="line">      AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;when test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">      AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;otherwise&gt;</span><br><span class="line">      AND featured = 1</span><br><span class="line">    &lt;/otherwise&gt;</span><br><span class="line">  &lt;/choose&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="trim-where-set"><a href="#trim-where-set" class="headerlink" title="trim, where, set"></a>trim, where, set</h2><p>前面几个例子已经合宜地解决了一个臭名昭著的动态 SQL 问题。现在回到<code>if</code>示例，这次我们将<code>ACTIVE = 1</code>也设置成动态的条件，看看会发生什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE </span><br><span class="line">  &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">    state = #&#123;state&#125;</span><br><span class="line">  &lt;/if&gt; </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>如果这些条件没有一个能匹配上会发生什么？最终这条 SQL 会变成这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE</span><br></pre></td></tr></table></figure></p>
+<p>这会导致查询失败。如果仅仅第二个条件匹配又会怎样？这条 SQL 最终会是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE </span><br><span class="line">AND title like ‘someTitle’</span><br></pre></td></tr></table></figure></p>
+<p>这个查询也会失败。这个问题不能简单地用条件句式来解决，如果你也曾经被迫这样写过，那么你很可能从此以后都不会再写出这种语句了<br>MyBatis 有一个简单的处理，这在 90% 的情况下都会有用。而在不能使用的地方，你可以自定义处理方式来令其正常工作。一处简单的修改就能达到目的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  &lt;where&gt; </span><br><span class="line">    &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">         state = #&#123;state&#125;</span><br><span class="line">    &lt;/if&gt; </span><br><span class="line">    &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">        AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">        AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p><code>where</code> 元素只会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入<code>WHERE</code>子句。而且，若语句的开头为<code>AND</code>或<code>OR</code>，<code>where</code> 元素也会将它们去除<br>如果 <code>where</code> 元素没有按正常套路出牌，我们可以通过自定义 <code>trim</code> 元素来定制 <code>where</code> 元素的功能。比如，和 <code>where</code> 元素等价的自定义 <code>trim</code> 元素为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;</span><br><span class="line">  ... </span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
+<p><code>prefixOverrides</code> 属性会忽略通过管道分隔的文本序列（注意此例中的空格也是必要的）。它的作用是移除所有指定在 <code>prefixOverrides</code> 属性中的内容，并且插入 <code>prefix</code> 属性中指定的内容<br>类似的用于动态更新语句的解决方案叫做 <code>set</code>。<code>set</code> 元素可以用于动态包含需要更新的列，而舍去其它的。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;update id=&quot;updateAuthorIfNecessary&quot;&gt;</span><br><span class="line">  update Author</span><br><span class="line">    &lt;set&gt;</span><br><span class="line">      &lt;if test=&quot;username != null&quot;&gt;username=#&#123;username&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;password != null&quot;&gt;password=#&#123;password&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;email != null&quot;&gt;email=#&#123;email&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;bio != null&quot;&gt;bio=#&#123;bio&#125;&lt;/if&gt;</span><br><span class="line">    &lt;/set&gt;</span><br><span class="line">  where id=#&#123;id&#125;</span><br><span class="line">&lt;/update&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里，<code>set</code> 元素会动态前置 SET 关键字，同时也会删掉无关的逗号，因为用了条件语句之后很可能就会在生成的 SQL 语句的后面留下这些逗号。（文档译者注：因为用的是<code>if</code>元素，若最后一个<code>if</code>没有匹配上而前面的匹配上，SQL 语句的最后就会有一个逗号遗留）<br>若你对 set 元素等价的自定义 trim 元素的代码感兴趣，那这就是它的真面目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;SET&quot; suffixOverrides=&quot;,&quot;&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
+<p>注意这里我们删去的是后缀值，同时添加了前缀值</p>
+<h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另外一个常用的操作需求是对一个集合进行遍历，通常是在构建 IN 条件语句的时候。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;domain.blog.Post&quot;&gt;</span><br><span class="line">  SELECT *</span><br><span class="line">  FROM POST P</span><br><span class="line">  WHERE ID in</span><br><span class="line">  &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;</span><br><span class="line">      open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;</span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">  &lt;/foreach&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>foreach 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及在迭代结果之间放置分隔符。这个元素是很智能的，因此它不会偶然地附加多余的分隔符<br>你可以将任何可迭代对象（如 List、Set 等）、Map 对象或者数组对象传递给 foreach 作为集合参数。当使用可迭代对象或者数组时，index 是当前迭代的次数，item 的值是本次迭代获取的元素。当使用 Map 对象（或者 Map.Entry 对象的集合）时，index 是键，item 是值。<br>到此我们已经完成了涉及 XML 配置文件和 XML 映射文件的讨论。下一章将详细探讨 Java API，这样就能提高已创建的映射文件的利用效率</p>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p><code>bind</code> 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectBlogsLike&quot; resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;bind name=&quot;pattern&quot; value=&quot;&apos;%&apos; + _parameter.getTitle() + &apos;%&apos;&quot; /&gt;</span><br><span class="line">  SELECT * FROM BLOG</span><br><span class="line">  WHERE title LIKE #&#123;pattern&#125;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>简单来说就是定义了一个变量</p>
+<h2 id="多数据库的支持"><a href="#多数据库的支持" class="headerlink" title="多数据库的支持"></a>多数据库的支持</h2><p>一个配置了“_databaseId”变量的 databaseIdProvider 可用于动态代码中，这样就可以根据不同的数据库厂商构建特定的语句。比如下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;insert id=&quot;insert&quot;&gt;</span><br><span class="line">  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;oracle&apos;&quot;&gt;</span><br><span class="line">      select seq_users.nextval from dual</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;db2&apos;&quot;&gt;</span><br><span class="line">      select nextval for seq_users from sysibm.sysdummy1&quot;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/selectKey&gt;</span><br><span class="line">  insert into users values (#&#123;id&#125;, #&#123;name&#125;)</span><br><span class="line">&lt;/insert&gt;</span><br></pre></td></tr></table></figure></p>
+<p>来源：mybatis文档(<a href="http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html" target="_blank" rel="noopener">http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html</a>)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjpwccu0s00016ou1zyip1ayf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -658,68 +719,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjpwc6y2a0003wku1rgj87xhz" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Mybatis3.4.7-动态SQL" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/29/Mybatis3.4.7-动态SQL/" class="article-date">
-  <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="元素"><a href="#元素" class="headerlink" title="元素"></a>元素</h2><ul>
-<li>if</li>
-<li>choose(when, otherwise)</li>
-<li>trim(where, set)</li>
-<li>foreach<h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2>动态 SQL 通常要做的事情是根据条件包含 <code>where</code> 子句的一部分。比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogWithTitleLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>这条语句提供了一种可选的查找文本功能。如果没有传入<code>title</code>，那么所有处于<code>ACTIVE</code>状态的BLOG都会返回；反之若传入了<code>title</code>，那么就会对<code>title</code>一列进行模糊查找并返回 BLOG 结果（细心的读者可能会发现，<code>title</code>参数值是可以包含一些掩码或通配符的）<br>如果希望通过<code>title</code>和<code>author</code>两个参数进行可选搜索该怎么办呢？首先，改变语句的名称让它更具实际意义；然后只要加入另一个条件即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="choose-when-otherwise"><a href="#choose-when-otherwise" class="headerlink" title="choose, when, otherwise"></a>choose, when, otherwise</h2><p>有时我们不想应用到所有的条件语句，而只想从中择其一项。针对这种情况，MyBatis 提供了 <code>choose</code> 元素，它有点像 Java 中的 <code>switch</code> 语句<br>还是上面的例子，但是这次变为提供了<code>title</code>就按<code>title</code>查找，提供了<code>author</code>就按<code>author</code>查找的情形，若两者都没有提供，就返回所有符合条件的 BLOG（实际情况可能是由管理员按一定策略选出 BLOG 列表，而不是返回大量无意义的随机结果）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  &lt;choose&gt;</span><br><span class="line">    &lt;when test=&quot;title != null&quot;&gt;</span><br><span class="line">      AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;when test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">      AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;otherwise&gt;</span><br><span class="line">      AND featured = 1</span><br><span class="line">    &lt;/otherwise&gt;</span><br><span class="line">  &lt;/choose&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="trim-where-set"><a href="#trim-where-set" class="headerlink" title="trim, where, set"></a>trim, where, set</h2><p>前面几个例子已经合宜地解决了一个臭名昭著的动态 SQL 问题。现在回到<code>if</code>示例，这次我们将<code>ACTIVE = 1</code>也设置成动态的条件，看看会发生什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE </span><br><span class="line">  &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">    state = #&#123;state&#125;</span><br><span class="line">  &lt;/if&gt; </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>如果这些条件没有一个能匹配上会发生什么？最终这条 SQL 会变成这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE</span><br></pre></td></tr></table></figure></p>
-<p>这会导致查询失败。如果仅仅第二个条件匹配又会怎样？这条 SQL 最终会是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE </span><br><span class="line">AND title like ‘someTitle’</span><br></pre></td></tr></table></figure></p>
-<p>这个查询也会失败。这个问题不能简单地用条件句式来解决，如果你也曾经被迫这样写过，那么你很可能从此以后都不会再写出这种语句了<br>MyBatis 有一个简单的处理，这在 90% 的情况下都会有用。而在不能使用的地方，你可以自定义处理方式来令其正常工作。一处简单的修改就能达到目的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  &lt;where&gt; </span><br><span class="line">    &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">         state = #&#123;state&#125;</span><br><span class="line">    &lt;/if&gt; </span><br><span class="line">    &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">        AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">        AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p><code>where</code> 元素只会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入<code>WHERE</code>子句。而且，若语句的开头为<code>AND</code>或<code>OR</code>，<code>where</code> 元素也会将它们去除<br>如果 <code>where</code> 元素没有按正常套路出牌，我们可以通过自定义 <code>trim</code> 元素来定制 <code>where</code> 元素的功能。比如，和 <code>where</code> 元素等价的自定义 <code>trim</code> 元素为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;</span><br><span class="line">  ... </span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
-<p><code>prefixOverrides</code> 属性会忽略通过管道分隔的文本序列（注意此例中的空格也是必要的）。它的作用是移除所有指定在 <code>prefixOverrides</code> 属性中的内容，并且插入 <code>prefix</code> 属性中指定的内容<br>类似的用于动态更新语句的解决方案叫做 <code>set</code>。<code>set</code> 元素可以用于动态包含需要更新的列，而舍去其它的。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;update id=&quot;updateAuthorIfNecessary&quot;&gt;</span><br><span class="line">  update Author</span><br><span class="line">    &lt;set&gt;</span><br><span class="line">      &lt;if test=&quot;username != null&quot;&gt;username=#&#123;username&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;password != null&quot;&gt;password=#&#123;password&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;email != null&quot;&gt;email=#&#123;email&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;bio != null&quot;&gt;bio=#&#123;bio&#125;&lt;/if&gt;</span><br><span class="line">    &lt;/set&gt;</span><br><span class="line">  where id=#&#123;id&#125;</span><br><span class="line">&lt;/update&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这里，<code>set</code> 元素会动态前置 SET 关键字，同时也会删掉无关的逗号，因为用了条件语句之后很可能就会在生成的 SQL 语句的后面留下这些逗号。（文档译者注：因为用的是<code>if</code>元素，若最后一个<code>if</code>没有匹配上而前面的匹配上，SQL 语句的最后就会有一个逗号遗留）<br>若你对 set 元素等价的自定义 trim 元素的代码感兴趣，那这就是它的真面目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;SET&quot; suffixOverrides=&quot;,&quot;&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
-<p>注意这里我们删去的是后缀值，同时添加了前缀值</p>
-<h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另外一个常用的操作需求是对一个集合进行遍历，通常是在构建 IN 条件语句的时候。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;domain.blog.Post&quot;&gt;</span><br><span class="line">  SELECT *</span><br><span class="line">  FROM POST P</span><br><span class="line">  WHERE ID in</span><br><span class="line">  &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;</span><br><span class="line">      open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;</span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">  &lt;/foreach&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>foreach 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及在迭代结果之间放置分隔符。这个元素是很智能的，因此它不会偶然地附加多余的分隔符<br>你可以将任何可迭代对象（如 List、Set 等）、Map 对象或者数组对象传递给 foreach 作为集合参数。当使用可迭代对象或者数组时，index 是当前迭代的次数，item 的值是本次迭代获取的元素。当使用 Map 对象（或者 Map.Entry 对象的集合）时，index 是键，item 是值。<br>到此我们已经完成了涉及 XML 配置文件和 XML 映射文件的讨论。下一章将详细探讨 Java API，这样就能提高已创建的映射文件的利用效率</p>
-<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p><code>bind</code> 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectBlogsLike&quot; resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;bind name=&quot;pattern&quot; value=&quot;&apos;%&apos; + _parameter.getTitle() + &apos;%&apos;&quot; /&gt;</span><br><span class="line">  SELECT * FROM BLOG</span><br><span class="line">  WHERE title LIKE #&#123;pattern&#125;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>简单来说就是定义了一个变量</p>
-<h2 id="多数据库的支持"><a href="#多数据库的支持" class="headerlink" title="多数据库的支持"></a>多数据库的支持</h2><p>一个配置了“_databaseId”变量的 databaseIdProvider 可用于动态代码中，这样就可以根据不同的数据库厂商构建特定的语句。比如下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;insert id=&quot;insert&quot;&gt;</span><br><span class="line">  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;oracle&apos;&quot;&gt;</span><br><span class="line">      select seq_users.nextval from dual</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;db2&apos;&quot;&gt;</span><br><span class="line">      select nextval for seq_users from sysibm.sysdummy1&quot;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/selectKey&gt;</span><br><span class="line">  insert into users values (#&#123;id&#125;, #&#123;name&#125;)</span><br><span class="line">&lt;/insert&gt;</span><br></pre></td></tr></table></figure></p>
-<p>来源：mybatis文档(<a href="http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html" target="_blank" rel="noopener">http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html</a>)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjpwc6y2b0004wku1j6drbtme" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjpwccu1g000i6ou1chsplchl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -778,7 +778,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjpwc6y2d0006wku1o48bxxq1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjpwccu0v00036ou1zybwlvjl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -844,11 +844,11 @@
           </li>
         
           <li>
-            <a href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
+            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
           </li>
         
           <li>
-            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
+            <a href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
           </li>
         
           <li>

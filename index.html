@@ -62,6 +62,101 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Redis3.2.100" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/29/Redis3.2.100/" class="article-date">
+  <time datetime="2018-12-28T16:00:00.000Z" itemprop="datePublished">2018-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/29/Redis3.2.100/">Spring Boot集成Redis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(<a href="https://github.com/dmajkic/redis/downloads" target="_blank" rel="noopener">https://github.com/dmajkic/redis/downloads</a>)</p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>启动服务器：<code>redis-servser.exe redis.windows.conf</code><br>开启客户机：<code>redis-cli</code></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p><code>redis 127.0.0.1:6379&gt; CONFIG GET CONFIG_SETTING_NAME</code><br><code>redis 127.0.0.1:6379&gt; CONFIG GET *</code>获取所有配置项<br>其他命令与数据类型参考：(<a href="http://www.redis.net.cn/tutorial/3503.html" target="_blank" rel="noopener">http://www.redis.net.cn/tutorial/3503.html</a>)</p>
+<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><p>添加依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>添加properties配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.database=0</span><br><span class="line">spring.redis.host=127.0.0.1</span><br><span class="line">spring.redis.port=6379</span><br><span class="line">spring.redis.jedis.pool.max-active=8</span><br><span class="line">spring.redis.jedis.pool.max-idle=8</span><br><span class="line">spring.redis.lettuce.pool.min-idle=0</span><br><span class="line">spring.cache.cache-names=cache1,cache2 //可能仅仅只需要添加这个配置，若在本地测试的话</span><br></pre></td></tr></table></figure></p>
+<p>Controller代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/test&quot;)</span><br><span class="line">    public String test()&#123;</span><br><span class="line">        DemoInfo loaded = service.findById(1);</span><br><span class="line">        System.out.println(&quot;loaded=&quot;+loaded);</span><br><span class="line">        DemoInfo cached = service.findById(1);</span><br><span class="line">        System.out.println(&quot;cached=&quot;+cached);</span><br><span class="line">        loaded = service.findById(2);</span><br><span class="line">        System.out.println(&quot;loaded2=&quot;+loaded);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里执行了两次一样的查询，一次新的查询(会在结果中体现出来)<br>Service代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class DemoInfoServiceImpl implements DemoInfoService &#123;</span><br><span class="line">    @Resource(name = &quot;demoInfoRepository&quot;)</span><br><span class="line">    private DemoInfoRepository repository;</span><br><span class="line"></span><br><span class="line">    @Qualifier(&quot;stringRedisTemplate&quot;)</span><br><span class="line">    @Autowired</span><br><span class="line">    private StringRedisTemplate template;</span><br><span class="line"></span><br><span class="line">    @Cacheable(keyGenerator = &quot;myKeyGenerator&quot;, value = &quot;demoInfoCache&quot;) //缓存,这里没有指定key</span><br><span class="line">    @Override</span><br><span class="line">    public DemoInfo findById(int id) &#123;</span><br><span class="line">        System.out.println(&quot;DemoInfoServiceImpl.findById()=========从数据库中进行获取的....id=&quot;+id);</span><br><span class="line">        return repository.findDemoInfoById(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void test() &#123;</span><br><span class="line">        ValueOperations&lt;String,String&gt; valueOperations = template.opsForValue();</span><br><span class="line">        valueOperations.set(&quot;mykey&quot;,&quot;random&quot;);</span><br><span class="line">        System.out.println(valueOperations.get(&quot;demoInfo&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>@Qualifier</code>这里指定注入的类型，StringRedisTemplate是RedisTemplate的子类，注入那个都行<br>利用template api对Redis进行操作<br><code>@Cacheable</code>注解在这里声明<code>Spring</code> 会将该方法的返回参数进行缓存，通过判断<code>key</code>是否存在, 如果存在则直接返回缓存中的数据<br>参数：</p>
+<ul>
+<li>value: 缓存的名称. 至少需要指定一个</li>
+<li>key: 存放到Redis中, K-V对的K，可以缺省, 缺省的话Spring会使用参数名称加参数值的形式作为K. 一般情况下这种情况没有问题, 可是当其他方法的参数名和参数值一样时, 这种方法就不是那么可靠了. 所以key建议自己重新指定<br>例子中的Key指定了自定义的生成器，稍后会贴<br><code>@CachePut</code>一般放置在更新函数中. 与<code>@Cacheable</code>不同的是不管key在Redis是否存在都会将返回结果进行缓存<br><code>@CacheEvict</code> 用来清除缓存<br><code>@CacheConfig</code> 如果每次都需要@<code>Cacheable @CachePut @CacheEvict</code>为指定同一个<code>value</code>那会显得比较麻烦. 使用<code>@Cacheing</code>可以统一为该类中的@Cache<em>注解指定<code>value</code> <code>keyGenerator</code>等注解<br>@Cache</em> 注解可用于任何方法，不局限于Service层中，在网上见过例子用于Repository中<br>Repository代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Repository(&quot;demoInfoRepository&quot;)</span><br><span class="line">public interface DemoInfoRepository extends JpaRepository&lt;DemoInfo, Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">    DemoInfo findDemoInfoById(int id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>根据id查询<br>Key生成器实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component(&quot;myKeyGenerator&quot;)</span><br><span class="line">public class MyKeyGenerator implements KeyGenerator &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">        System.out.println(&quot;KeyGenerator()&quot;);</span><br><span class="line"></span><br><span class="line">        StringBuilder sb = new StringBuilder();</span><br><span class="line">        sb.append(target.getClass().getName());</span><br><span class="line">        sb.append(method.getName());</span><br><span class="line">        for (Object o : params)&#123;</span><br><span class="line">            sb.append(o.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;keyGenerator=&quot; + sb.toString());</span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要实现<code>KeyGenerator</code>接口<br>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">loaded=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">cached=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById2</span><br><span class="line">loaded2=id=2 name=李四 password=45678</span><br></pre></td></tr></table></figure></p>
+<p>因为之前已进行过运行，redis存在缓存数据<br>实际上第一次查询时会输出”从数据库中获取”(在Service层中体现)<br>第二次进行一样的查询因为在redis中已存在相同的key，所以直接从缓存中获取，并不调用service方法<br>第三次查询时新的查询，缓存中不存在，所以会输出”从数据库中获取”</p>
+<p>补充：</p>
+<h2 id="Spring-Data-Redis"><a href="#Spring-Data-Redis" class="headerlink" title="Spring Data Redis"></a>Spring Data Redis</h2><p>简介：Spring支持Redis所封装的类，包含了利用template对象对Redis进行操作等。</p>
+<h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><p>Redis2.6以上版本，Spring Data Redis内部集成Lettuce和Jedis</p>
+<h3 id="创建连接"><a href="#创建连接" class="headerlink" title="创建连接"></a>创建连接</h3><p>org.springframework.data.redis.connection负责检索和处理回收连接</p>
+<h3 id="配置连接"><a href="#配置连接" class="headerlink" title="配置连接"></a>配置连接</h3><p>Lettuce与Jedis大同小异，通过@Configuration注解配置<br>以下例子为Jedis<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">class RedisConfiguration &#123;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public JedisConnectionFactory redisConnectionFactory() &#123;</span><br><span class="line"></span><br><span class="line">    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(&quot;server&quot;, 6379);</span><br><span class="line">    return new JedisConnectionFactory(config);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="工作类-RedisTemplate"><a href="#工作类-RedisTemplate" class="headerlink" title="工作类 RedisTemplate"></a>工作类 RedisTemplate</h3><p>由Factory返回的高级操作类，代表着目前的连接。封装了底层的序列化与反序列化。<br>提供的operations接口</p>
+<ul>
+<li>GeoOperations</li>
+<li>HashOperations</li>
+<li>HyperLogLogOperations</li>
+<li>ListOperations</li>
+<li>SetOperations</li>
+<li>ValueOperations</li>
+<li>ZSetOperations<br>通过调用template的opsFORxxx返回operation类进行操作，只对指定的数据类型有效<br>而BoundOperation接口</li>
+<li>BoundGeoOperations</li>
+<li>BoundHashOperations</li>
+<li>BoundKeyOperations</li>
+<li>BoundListOperations</li>
+<li>BoundSetOperations</li>
+<li>BoundValueOperations</li>
+<li>BoundZSetOperations<br>通过调用template的boundxxxOps(key)返回的operation类进行操作，已绑定指定数据类型的特定key，只可对该对象操作<h3 id="通过回调Callback与RedisConnection直接对话"><a href="#通过回调Callback与RedisConnection直接对话" class="headerlink" title="通过回调Callback与RedisConnection直接对话"></a>通过回调Callback与RedisConnection直接对话</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void useCallback() &#123;</span><br><span class="line"></span><br><span class="line">  redisTemplate.execute(new RedisCallback&lt;Object&gt;() &#123;</span><br><span class="line">    public Object doInRedis(RedisConnection connection) throws DataAccessException &#123;</span><br><span class="line">      Long size = connection.dbSize();</span><br><span class="line">      // Can cast to StringRedisConnection if using a StringRedisTemplate</span><br><span class="line">      ((StringRedisConnection)connection).set(&quot;key&quot;, &quot;value&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h3><p>数据存仅Redis时需要进行序列化，取出来时进行反序列化。高层操作类template已封装。<br>org.springframework.data.redis.serializer</p>
+<ul>
+<li>基于RedisSerializer的双向序列化</li>
+<li>RedisElementReader和RedisElementWriter<br>两者的区别在于前者主要序列化为<code>byte[]</code>，而后者是<code>ByteBuffer</code><br>实现：</li>
+<li>JdkSerializationRedisSerializer，默认用于RedisCache和RedisTemplate</li>
+<li>StringRedisSerializer<br>note：默认情况下，RedisCche和RedisTemplate被配置成使用Java原生的序列化机制。安全性有了问题，推荐使用JSON格式<h4 id="Hash-mapping"><a href="#Hash-mapping" class="headerlink" title="Hash mapping"></a>Hash mapping</h4>理想情况下可使用JSON映射对象，key为属性名，value为属性值。现在提供Hash映射对象。把对象整个转化成Hash，再通过对Hash值的序列化达到这个对象存进Redis中<br>方法：</li>
+<li>直接映射，通过HashOperations和一个serializer</li>
+<li>通过Redis Repositories</li>
+<li>HashMapper和HashOperations<br>一下是第三种方法的例子<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">  String firstname;</span><br><span class="line">  String lastname;</span><br><span class="line"></span><br><span class="line">  // …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class HashMapping &#123;</span><br><span class="line"></span><br><span class="line">  @Autowired</span><br><span class="line">  HashOperations&lt;String, byte[], byte[]&gt; hashOperations;</span><br><span class="line"></span><br><span class="line">  HashMapper&lt;Object, byte[], byte[]&gt; mapper = new ObjectHashMapper();</span><br><span class="line"></span><br><span class="line">  public void writeHash(String key, Person person) &#123;</span><br><span class="line"></span><br><span class="line">    Map&lt;byte[], byte[]&gt; mappedHash = mapper.toHash(person);</span><br><span class="line">    hashOperations.putAll(key, mappedHash);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public Person loadHash(String key) &#123;</span><br><span class="line"></span><br><span class="line">    Map&lt;byte[], byte[]&gt; loadedHash = hashOperations.entries(&quot;key&quot;);</span><br><span class="line">    return (Person) mapper.fromHash(loadedHash);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>HashMapper提供map与对象的互相转换</p>
+<h3 id="Redis-Transactions"><a href="#Redis-Transactions" class="headerlink" title="Redis Transactions"></a>Redis Transactions</h3><p>Redis事务命令muti(开启), exec(执行)和discard(取消)<br>Redis不保证执行的所有操作都由同一连接完成。所以Spring-Data-提供SessionCallback接口使得可以使用同一连接执行多个操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//execute a transaction</span><br><span class="line">List&lt;Object&gt; txResults = redisTemplate.execute(new SessionCallback&lt;List&lt;Object&gt;&gt;() &#123;</span><br><span class="line">  public List&lt;Object&gt; execute(RedisOperations operations) throws DataAccessException &#123;</span><br><span class="line">    operations.multi();</span><br><span class="line">    operations.opsForSet().add(&quot;key&quot;, &quot;value1&quot;);</span><br><span class="line"></span><br><span class="line">    // This will contain the results of all operations in the transaction</span><br><span class="line">    return operations.exec();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">System.out.println(&quot;Number of items added to set: &quot; + txResults.get(0));</span><br></pre></td></tr></table></figure></p>
+<p>通过注解@EnableTransactionManagement在配置类上启用事务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableTransactionManagement            // 1                     </span><br><span class="line">public class RedisTxContextConfiguration &#123;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public StringRedisTemplate redisTemplate() &#123;</span><br><span class="line">    StringRedisTemplate template = new StringRedisTemplate(redisConnectionFactory());</span><br><span class="line">    // explicitly enable transaction support</span><br><span class="line">    template.setEnableTransactionSupport(true);    //  2        </span><br><span class="line">    return template;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public RedisConnectionFactory redisConnectionFactory() &#123;</span><br><span class="line">    // jedis || Lettuce</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public PlatformTransactionManager transactionManager() throws SQLException &#123;</span><br><span class="line">    return new DataSourceTransactionManager(dataSource());   //  3</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public DataSource dataSource() throws SQLException &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>setEnableTransactionSupport（true）为每个正在使用的RedisTemplate显式启用<br>这样做会强制将当前RedisConnection绑定到触发MULTI的当前Thread<br>如果事务完成且没有错误，则调用EXEC否则调用DISCARD<br>进入MULTI后，RedisConnection会对写入操作进行排队所有只读操作（如KEYS）都通过管道传输到一个新的（非线程绑定的）RedisConnection<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// must be performed on thread-bound connection</span><br><span class="line">template.opsForValue().set(&quot;thing1&quot;, &quot;thing2&quot;);</span><br><span class="line"></span><br><span class="line">// read operation must be executed on a free (not transaction-aware) connection</span><br><span class="line">template.keys(&quot;*&quot;);</span><br><span class="line"></span><br><span class="line">// returns null as values set within a transaction are not visible</span><br><span class="line">template.opsForValue().get(&quot;thing1&quot;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="Pipelining"><a href="#Pipelining" class="headerlink" title="Pipelining"></a>Pipelining</h3><p>发送多个命令不等待回复。最后一步读取回复<br>若关心结果可以Pipeling中运行RedisCallback或SessionCallback获取返回的结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//pop a specified number of items from a queue</span><br><span class="line">List&lt;Object&gt; results = stringRedisTemplate.executePipelined(</span><br><span class="line">  new RedisCallback&lt;Object&gt;() &#123;</span><br><span class="line">    public Object doInRedis(RedisConnection connection) throws DataAccessException &#123;</span><br><span class="line">      StringRedisConnection stringRedisConn = (StringRedisConnection)connection;</span><br><span class="line">      for(int i=0; i&lt; batchSize; i++) &#123;</span><br><span class="line">        stringRedisConn.rPop(&quot;myqueue&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">    return null;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这个值将被丢弃，返回值必须为null, 用于支持返回的结果<br>若不关心结果，则可以使用execute方法，为pipeline参数传递true</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/29/Redis3.2.100/" data-id="cjq8xr26d000hksu1r8hehrc4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-JS随手记" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/12/17/JS随手记/" class="article-date">
@@ -96,7 +191,58 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/17/JS随手记/" data-id="cjpwccu0o00006ou10tjc42qg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/17/JS随手记/" data-id="cjq8xr25x0004ksu11rsk6wcq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SpringMVC文档概述-STOMP" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/14/SpringMVC文档概述-STOMP/" class="article-date">
+  <time datetime="2018-12-13T16:00:00.000Z" itemprop="datePublished">2018-12-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>WebSocket</code>是一种全双工通信，而<code>SockJS</code>为它提供了浏览器兼容(某些浏览器不支持<code>WebSocket</code>，所以<code>SockJS</code>为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型<br>而STOMP就是传输的简单数据协议</p>
+<h2 id="STOMP原理与过程"><a href="#STOMP原理与过程" class="headerlink" title="STOMP原理与过程"></a>STOMP原理与过程</h2><ul>
+<li>首先在服务器端通过<code>Config</code>类注册前缀(<code>app</code>目的地前缀、简单中继器前缀和升级<code>WebSocket</code>请求)<ul>
+<li>这些前缀是告诉服务器如何处理这些请求</li>
+<li><code>app</code>目的地前缀：通过<code>Controller</code>,<code>@MesageMapping</code>或<code>@SubscribeMapping</code>最终转发到中继器或者变成点对点通信，一般是转发到消息中继器(亦可以说是Spring Boot内部中间件的简单实现)</li>
+<li>简单的中继器前缀：符合中继器前缀的请求都进入中继器然后去掉前缀，看匹配上那个路由键，就触发中继器发布订阅信息</li>
+<li>升级<code>WebSocket</code>请求：升级过程完全封装，无需理会，只需定义。其过程就是客户端发送的请求头中带有<code>Upgrade: websocket</code>，<code>Connection: Upgrade</code>等发起<code>WebSocket</code>连接</li>
+</ul>
+</li>
+<li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
+<li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
+<li>而当客户端发送到<code>app</code>目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个<code>Hadnler</code>，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，<code>WebScoket</code>的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br><code>WebSocket</code>原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解来自MVC文档(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow</a>)<br>简单例子来自Spring官网 (<a href="https://spring.io/guides/gs/messaging-stomp-websocket/" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/</a>)</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjq8xr25y0005ksu1a7bbf2sw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -152,58 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-异步请求/" data-id="cjpwccu1e000g6ou1uru4241v" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-SpringMVC文档概述-STOMP" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/14/SpringMVC文档概述-STOMP/" class="article-date">
-  <time datetime="2018-12-13T16:00:00.000Z" itemprop="datePublished">2018-12-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/14/SpringMVC文档概述-STOMP/">SpringMVC-文档搬运工 STOMP</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>WebSocket</code>是一种全双工通信，而<code>SockJS</code>为它提供了浏览器兼容(某些浏览器不支持<code>WebSocket</code>，所以<code>SockJS</code>为它们提供回退，自动降为轮询)。实现服务器与客户端之间自由通信，服务器可主动地推送消息到客户端，而不是传统的请求-响应模型<br>而STOMP就是传输的简单数据协议</p>
-<h2 id="STOMP原理与过程"><a href="#STOMP原理与过程" class="headerlink" title="STOMP原理与过程"></a>STOMP原理与过程</h2><ul>
-<li>首先在服务器端通过<code>Config</code>类注册前缀(<code>app</code>目的地前缀、简单中继器前缀和升级<code>WebSocket</code>请求)<ul>
-<li>这些前缀是告诉服务器如何处理这些请求</li>
-<li><code>app</code>目的地前缀：通过<code>Controller</code>,<code>@MesageMapping</code>或<code>@SubscribeMapping</code>最终转发到中继器或者变成点对点通信，一般是转发到消息中继器(亦可以说是Spring Boot内部中间件的简单实现)</li>
-<li>简单的中继器前缀：符合中继器前缀的请求都进入中继器然后去掉前缀，看匹配上那个路由键，就触发中继器发布订阅信息</li>
-<li>升级<code>WebSocket</code>请求：升级过程完全封装，无需理会，只需定义。其过程就是客户端发送的请求头中带有<code>Upgrade: websocket</code>，<code>Connection: Upgrade</code>等发起<code>WebSocket</code>连接</li>
-</ul>
-</li>
-<li>然后在前端JS可以定义订阅那个频道，当然需要加上中继器前缀</li>
-<li>当客户端发送带有中继器前端的请求，就会进入到中继器，匹配上路由键，中间可能夹杂一些业务处理(比如拍卖的的出价的入队等)，然后中继器会发布订阅信息到所有订阅了该频道的客户端(比如当前实时出价的更新)</li>
-<li>而当客户端发送到<code>app</code>目的地请求的前缀时，会根据拿掉前缀后的请求匹配上那个<code>Hadnler</code>，再转发到中继器，然后匹配路由键，发布订阅信息<br>其实说白了，<code>WebScoket</code>的全双工通信就是在HTTP的基础上在客户端与服务端之间加多了一个虚拟层，就是消息队列或者叫消息中间件(中继器)，它接收来自服务端或者客户端的信息(带有进入它的前缀),然后匹配信息应该发送到哪个频道。由它来做了主动发送的动作。本质上它是一个转发消息的队列，所以实现发布订阅非常的简单，也会它的原理之一。<br><code>WebSocket</code>原理(<a href="https://www.cnblogs.com/fuqiang88/p/5956363.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuqiang88/p/5956363.html</a>)<br>图解来自MVC文档(<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-message-flow</a>)<br>简单例子来自Spring官网 (<a href="https://spring.io/guides/gs/messaging-stomp-websocket/" target="_blank" rel="noopener">https://spring.io/guides/gs/messaging-stomp-websocket/</a>)</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-STOMP/" data-id="cjpwccu1d000e6ou1tpm3nwxr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/14/SpringMVC文档概述-异步请求/" data-id="cjq8xr263000aksu1bmhyyr0p" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -333,7 +428,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-Controller相关/" data-id="cjpwccu26000t6ou1u72g2htp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-Controller相关/" data-id="cjq8xr26w000tksu1t75jrfcc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -422,7 +517,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/" data-id="cjpwccu1u000n6ou1okgufbgb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/" data-id="cjq8xr26i000mksu1x1u7wv7e" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -496,7 +591,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjpwccu1i000k6ou14cllt0zn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/05/RabbitMQ/" data-id="cjq8xr26g000kksu1vaw72ww4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -508,64 +603,9 @@
 
 
   
-    <article id="post-Redis3.2.100" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-Spring Boot集成Mybatis过程" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/12/05/Redis3.2.100/" class="article-date">
-  <time datetime="2018-12-04T16:00:00.000Z" itemprop="datePublished">2018-12-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/05/Redis3.2.100/">Spring Boot集成Redis</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(<a href="https://github.com/dmajkic/redis/downloads" target="_blank" rel="noopener">https://github.com/dmajkic/redis/downloads</a>)</p>
-<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>启动服务器：<code>redis-servser.exe redis.windows.conf</code><br>开启客户机：<code>redis-cli</code></p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p><code>redis 127.0.0.1:6379&gt; CONFIG GET CONFIG_SETTING_NAME</code><br><code>redis 127.0.0.1:6379&gt; CONFIG GET *</code>获取所有配置项<br>其他命令与数据类型参考：(<a href="http://www.redis.net.cn/tutorial/3503.html" target="_blank" rel="noopener">http://www.redis.net.cn/tutorial/3503.html</a>)</p>
-<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><p>添加依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
-<p>添加properties配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.database=0</span><br><span class="line">spring.redis.host=127.0.0.1</span><br><span class="line">spring.redis.port=6379</span><br><span class="line">spring.redis.jedis.pool.max-active=8</span><br><span class="line">spring.redis.jedis.pool.max-idle=8</span><br><span class="line">spring.redis.lettuce.pool.min-idle=0</span><br><span class="line">spring.cache.cache-names=cache1,cache2 //可能仅仅只需要添加这个配置，若在本地测试的话</span><br></pre></td></tr></table></figure></p>
-<p>Controller代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/test&quot;)</span><br><span class="line">    public String test()&#123;</span><br><span class="line">        DemoInfo loaded = service.findById(1);</span><br><span class="line">        System.out.println(&quot;loaded=&quot;+loaded);</span><br><span class="line">        DemoInfo cached = service.findById(1);</span><br><span class="line">        System.out.println(&quot;cached=&quot;+cached);</span><br><span class="line">        loaded = service.findById(2);</span><br><span class="line">        System.out.println(&quot;loaded2=&quot;+loaded);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里执行了两次一样的查询，一次新的查询(会在结果中体现出来)<br>Service代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class DemoInfoServiceImpl implements DemoInfoService &#123;</span><br><span class="line">    @Resource(name = &quot;demoInfoRepository&quot;)</span><br><span class="line">    private DemoInfoRepository repository;</span><br><span class="line"></span><br><span class="line">    @Qualifier(&quot;stringRedisTemplate&quot;)</span><br><span class="line">    @Autowired</span><br><span class="line">    private StringRedisTemplate template;</span><br><span class="line"></span><br><span class="line">    @Cacheable(keyGenerator = &quot;myKeyGenerator&quot;, value = &quot;demoInfoCache&quot;) //缓存,这里没有指定key</span><br><span class="line">    @Override</span><br><span class="line">    public DemoInfo findById(int id) &#123;</span><br><span class="line">        System.out.println(&quot;DemoInfoServiceImpl.findById()=========从数据库中进行获取的....id=&quot;+id);</span><br><span class="line">        return repository.findDemoInfoById(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void test() &#123;</span><br><span class="line">        ValueOperations&lt;String,String&gt; valueOperations = template.opsForValue();</span><br><span class="line">        valueOperations.set(&quot;mykey&quot;,&quot;random&quot;);</span><br><span class="line">        System.out.println(valueOperations.get(&quot;demoInfo&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><code>@Qualifier</code>这里指定注入的类型，StringRedisTemplate是RedisTemplate的子类，注入那个都行<br>利用template api对Redis进行操作<br><code>@Cacheable</code>注解在这里声明<code>Spring</code> 会将该方法的返回参数进行缓存，通过判断<code>key</code>是否存在, 如果存在则直接返回缓存中的数据<br>参数：</p>
-<ul>
-<li>value: 缓存的名称. 至少需要指定一个</li>
-<li>key: 存放到Redis中, K-V对的K，可以缺省, 缺省的话Spring会使用参数名称加参数值的形式作为K. 一般情况下这种情况没有问题, 可是当其他方法的参数名和参数值一样时, 这种方法就不是那么可靠了. 所以key建议自己重新指定<br>例子中的Key指定了自定义的生成器，稍后会贴<br><code>@CachePut</code>一般放置在更新函数中. 与<code>@Cacheable</code>不同的是不管key在Redis是否存在都会将返回结果进行缓存<br><code>@CacheEvict</code> 用来清除缓存<br><code>@CacheConfig</code> 如果每次都需要@<code>Cacheable @CachePut @CacheEvict</code>为指定同一个<code>value</code>那会显得比较麻烦. 使用<code>@Cacheing</code>可以统一为该类中的@Cache<em>注解指定<code>value</code> <code>keyGenerator</code>等注解<br>@Cache</em> 注解可用于任何方法，不局限于Service层中，在网上见过例子用于Repository中<br>Repository代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Repository(&quot;demoInfoRepository&quot;)</span><br><span class="line">public interface DemoInfoRepository extends JpaRepository&lt;DemoInfo, Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">    DemoInfo findDemoInfoById(int id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>根据id查询<br>Key生成器实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component(&quot;myKeyGenerator&quot;)</span><br><span class="line">public class MyKeyGenerator implements KeyGenerator &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">        System.out.println(&quot;KeyGenerator()&quot;);</span><br><span class="line"></span><br><span class="line">        StringBuilder sb = new StringBuilder();</span><br><span class="line">        sb.append(target.getClass().getName());</span><br><span class="line">        sb.append(method.getName());</span><br><span class="line">        for (Object o : params)&#123;</span><br><span class="line">            sb.append(o.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;keyGenerator=&quot; + sb.toString());</span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>需要实现<code>KeyGenerator</code>接口<br>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">loaded=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">cached=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById2</span><br><span class="line">loaded2=id=2 name=李四 password=45678</span><br></pre></td></tr></table></figure></p>
-<p>因为之前已进行过运行，redis存在缓存数据<br>实际上第一次查询时会输出”从数据库中获取”(在Service层中体现)<br>第二次进行一样的查询因为在redis中已存在相同的key，所以直接从缓存中获取，并不调用service方法<br>第三次查询时新的查询，缓存中不存在，所以会输出”从数据库中获取”</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/Redis3.2.100/" data-id="cjpwccu0w00046ou1wvpgzesh" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Mybatis3.4.7-动态SQL" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/29/Mybatis3.4.7-动态SQL/" class="article-date">
+    <a href="/2018/11/29/Spring Boot集成Mybatis过程/" class="article-date">
   <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
 </a>
     
@@ -577,7 +617,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
+      <a class="article-title" href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
     </h1>
   
 
@@ -585,34 +625,32 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="元素"><a href="#元素" class="headerlink" title="元素"></a>元素</h2><ul>
-<li>if</li>
-<li>choose(when, otherwise)</li>
-<li>trim(where, set)</li>
-<li>foreach<h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2>动态 SQL 通常要做的事情是根据条件包含 <code>where</code> 子句的一部分。比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogWithTitleLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
+        <ol>
+<li>新建Spring Boot项目，勾选Mybatis支持</li>
+<li>application.properties添加相应配置(或者在手动在pom.xml添加依赖)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.3.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<p>这条语句提供了一种可选的查找文本功能。如果没有传入<code>title</code>，那么所有处于<code>ACTIVE</code>状态的BLOG都会返回；反之若传入了<code>title</code>，那么就会对<code>title</code>一列进行模糊查找并返回 BLOG 结果（细心的读者可能会发现，<code>title</code>参数值是可以包含一些掩码或通配符的）<br>如果希望通过<code>title</code>和<code>author</code>两个参数进行可选搜索该怎么办呢？首先，改变语句的名称让它更具实际意义；然后只要加入另一个条件即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="choose-when-otherwise"><a href="#choose-when-otherwise" class="headerlink" title="choose, when, otherwise"></a>choose, when, otherwise</h2><p>有时我们不想应用到所有的条件语句，而只想从中择其一项。针对这种情况，MyBatis 提供了 <code>choose</code> 元素，它有点像 Java 中的 <code>switch</code> 语句<br>还是上面的例子，但是这次变为提供了<code>title</code>就按<code>title</code>查找，提供了<code>author</code>就按<code>author</code>查找的情形，若两者都没有提供，就返回所有符合条件的 BLOG（实际情况可能是由管理员按一定策略选出 BLOG 列表，而不是返回大量无意义的随机结果）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  &lt;choose&gt;</span><br><span class="line">    &lt;when test=&quot;title != null&quot;&gt;</span><br><span class="line">      AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;when test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">      AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;otherwise&gt;</span><br><span class="line">      AND featured = 1</span><br><span class="line">    &lt;/otherwise&gt;</span><br><span class="line">  &lt;/choose&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="trim-where-set"><a href="#trim-where-set" class="headerlink" title="trim, where, set"></a>trim, where, set</h2><p>前面几个例子已经合宜地解决了一个臭名昭著的动态 SQL 问题。现在回到<code>if</code>示例，这次我们将<code>ACTIVE = 1</code>也设置成动态的条件，看看会发生什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE </span><br><span class="line">  &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">    state = #&#123;state&#125;</span><br><span class="line">  &lt;/if&gt; </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>如果这些条件没有一个能匹配上会发生什么？最终这条 SQL 会变成这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE</span><br></pre></td></tr></table></figure></p>
-<p>这会导致查询失败。如果仅仅第二个条件匹配又会怎样？这条 SQL 最终会是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE </span><br><span class="line">AND title like ‘someTitle’</span><br></pre></td></tr></table></figure></p>
-<p>这个查询也会失败。这个问题不能简单地用条件句式来解决，如果你也曾经被迫这样写过，那么你很可能从此以后都不会再写出这种语句了<br>MyBatis 有一个简单的处理，这在 90% 的情况下都会有用。而在不能使用的地方，你可以自定义处理方式来令其正常工作。一处简单的修改就能达到目的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  &lt;where&gt; </span><br><span class="line">    &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">         state = #&#123;state&#125;</span><br><span class="line">    &lt;/if&gt; </span><br><span class="line">    &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">        AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">        AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p><code>where</code> 元素只会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入<code>WHERE</code>子句。而且，若语句的开头为<code>AND</code>或<code>OR</code>，<code>where</code> 元素也会将它们去除<br>如果 <code>where</code> 元素没有按正常套路出牌，我们可以通过自定义 <code>trim</code> 元素来定制 <code>where</code> 元素的功能。比如，和 <code>where</code> 元素等价的自定义 <code>trim</code> 元素为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;</span><br><span class="line">  ... </span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
-<p><code>prefixOverrides</code> 属性会忽略通过管道分隔的文本序列（注意此例中的空格也是必要的）。它的作用是移除所有指定在 <code>prefixOverrides</code> 属性中的内容，并且插入 <code>prefix</code> 属性中指定的内容<br>类似的用于动态更新语句的解决方案叫做 <code>set</code>。<code>set</code> 元素可以用于动态包含需要更新的列，而舍去其它的。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;update id=&quot;updateAuthorIfNecessary&quot;&gt;</span><br><span class="line">  update Author</span><br><span class="line">    &lt;set&gt;</span><br><span class="line">      &lt;if test=&quot;username != null&quot;&gt;username=#&#123;username&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;password != null&quot;&gt;password=#&#123;password&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;email != null&quot;&gt;email=#&#123;email&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;bio != null&quot;&gt;bio=#&#123;bio&#125;&lt;/if&gt;</span><br><span class="line">    &lt;/set&gt;</span><br><span class="line">  where id=#&#123;id&#125;</span><br><span class="line">&lt;/update&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这里，<code>set</code> 元素会动态前置 SET 关键字，同时也会删掉无关的逗号，因为用了条件语句之后很可能就会在生成的 SQL 语句的后面留下这些逗号。（文档译者注：因为用的是<code>if</code>元素，若最后一个<code>if</code>没有匹配上而前面的匹配上，SQL 语句的最后就会有一个逗号遗留）<br>若你对 set 元素等价的自定义 trim 元素的代码感兴趣，那这就是它的真面目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;SET&quot; suffixOverrides=&quot;,&quot;&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
-<p>注意这里我们删去的是后缀值，同时添加了前缀值</p>
-<h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另外一个常用的操作需求是对一个集合进行遍历，通常是在构建 IN 条件语句的时候。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;domain.blog.Post&quot;&gt;</span><br><span class="line">  SELECT *</span><br><span class="line">  FROM POST P</span><br><span class="line">  WHERE ID in</span><br><span class="line">  &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;</span><br><span class="line">      open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;</span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">  &lt;/foreach&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>foreach 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及在迭代结果之间放置分隔符。这个元素是很智能的，因此它不会偶然地附加多余的分隔符<br>你可以将任何可迭代对象（如 List、Set 等）、Map 对象或者数组对象传递给 foreach 作为集合参数。当使用可迭代对象或者数组时，index 是当前迭代的次数，item 的值是本次迭代获取的元素。当使用 Map 对象（或者 Map.Entry 对象的集合）时，index 是键，item 是值。<br>到此我们已经完成了涉及 XML 配置文件和 XML 映射文件的讨论。下一章将详细探讨 Java API，这样就能提高已创建的映射文件的利用效率</p>
-<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p><code>bind</code> 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectBlogsLike&quot; resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;bind name=&quot;pattern&quot; value=&quot;&apos;%&apos; + _parameter.getTitle() + &apos;%&apos;&quot; /&gt;</span><br><span class="line">  SELECT * FROM BLOG</span><br><span class="line">  WHERE title LIKE #&#123;pattern&#125;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
-<p>简单来说就是定义了一个变量</p>
-<h2 id="多数据库的支持"><a href="#多数据库的支持" class="headerlink" title="多数据库的支持"></a>多数据库的支持</h2><p>一个配置了“_databaseId”变量的 databaseIdProvider 可用于动态代码中，这样就可以根据不同的数据库厂商构建特定的语句。比如下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;insert id=&quot;insert&quot;&gt;</span><br><span class="line">  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;oracle&apos;&quot;&gt;</span><br><span class="line">      select seq_users.nextval from dual</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;db2&apos;&quot;&gt;</span><br><span class="line">      select nextval for seq_users from sysibm.sysdummy1&quot;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/selectKey&gt;</span><br><span class="line">  insert into users values (#&#123;id&#125;, #&#123;name&#125;)</span><br><span class="line">&lt;/insert&gt;</span><br></pre></td></tr></table></figure></p>
-<p>来源：mybatis文档(<a href="http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html" target="_blank" rel="noopener">http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html</a>)</p>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.type-aliases-package=com.example.demo.myDemo.domin</span><br><span class="line">mybatis.configuration.use-generated-keys=true</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
+<p>主要是配置mapper.xml文件的位置，容器的位置<br>此处附上thymeleaf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.thymeleaf.prefix=classpath:/Student/</span><br><span class="line">spring.thymeleaf.mode=LEGACYHTML5</span><br><span class="line">spring.thymeleaf.suffix=.html</span><br><span class="line">spring.thymeleaf.encoding=UTF-8</span><br><span class="line">spring.thymeleaf.servlet.content-type=text/html</span><br><span class="line">spring.thymeleaf.cache=false</span><br><span class="line">spring.resources.chain.strategy.content.enabled=true</span><br><span class="line">spring.resources.chain.strategy.content.paths=/**</span><br><span class="line">#thymeleaf end</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>在应用启动入口xxxxApplication.class加上@MapperScan(“包名”)。<br>主要用意在于告诉spring，dao层接口在哪<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@MapperScan(&quot;com.example.demo.myDemo.domin&quot;)</span><br><span class="line">public class DemoApplication extends SpringBootServletInitializer &#123;</span><br><span class="line">	@Override</span><br><span class="line">	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;</span><br><span class="line">		return builder.sources(DemoApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><ol>
+<li>每个mapper.xml文件对应一个dao层接口，这是用mapper标签的namespace属性所决定的</li>
+<li>Mybatis是面向SQL语句的框架，不要用Hibernate面向对象的思想去用它,要用SQL语句最简单的思维，比如查询到的外键可以说不是什么关系映射，它就是一个简简单单的一个列的一个值，所以数据容器可以只用基本数据类型去容纳它</li>
+<li><p>关于select标签的association子标签，若只是嵌套结果的用法，可以很简单的当成只是把一部分结果放进一个应用的对象中甚至不需要用association，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;studentResultMap&quot; type=&quot;Student&quot;&gt;</span><br><span class="line">        &lt;id property=&quot;sId&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sName&quot; column=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sAge&quot; column=&quot;age&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sSex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">        &lt;!--&lt;association property=&quot;myclass&quot; column=&quot;classid&quot; javaType=&quot;MyClass&quot; select=&quot;selectClass&quot; /&gt;--&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cId&quot; column=&quot;classid&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cName&quot; column=&quot;classname&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不需要mybatis-config.xml文件，需要配置的属性已经在application.xml中有了</p>
+</li>
+<li>不需要配置事务管理器，Spring Boot中有默认的实现，就算配置了也会被Spring Boot的配置覆盖</li>
+</ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjpwccu0s00016ou1zyip1ayf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjq8xr25t0001ksu1m454798u" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -719,7 +757,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjpwccu1g000i6ou1chsplchl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/" data-id="cjq8xr26e000iksu1qu2e0xep" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -731,9 +769,9 @@
 
 
   
-    <article id="post-Spring Boot集成Mybatis过程" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-Mybatis3.4.7-动态SQL" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/11/29/Spring Boot集成Mybatis过程/" class="article-date">
+    <a href="/2018/11/29/Mybatis3.4.7-动态SQL/" class="article-date">
   <time datetime="2018-11-28T16:00:00.000Z" itemprop="datePublished">2018-11-29</time>
 </a>
     
@@ -745,7 +783,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Spring Boot集成Mybatis过程/">Spring Boot集成Mybatis过程(简单Demo)</a>
+      <a class="article-title" href="/2018/11/29/Mybatis3.4.7-动态SQL/">Mybatis3.4.7 动态SQL(SQL的拼接)</a>
     </h1>
   
 
@@ -753,32 +791,34 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li>新建Spring Boot项目，勾选Mybatis支持</li>
-<li>application.properties添加相应配置(或者在手动在pom.xml添加依赖)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.3.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+        <h2 id="元素"><a href="#元素" class="headerlink" title="元素"></a>元素</h2><ul>
+<li>if</li>
+<li>choose(when, otherwise)</li>
+<li>trim(where, set)</li>
+<li>foreach<h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2>动态 SQL 通常要做的事情是根据条件包含 <code>where</code> 子句的一部分。比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogWithTitleLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.type-aliases-package=com.example.demo.myDemo.domin</span><br><span class="line">mybatis.configuration.use-generated-keys=true</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
-<p>主要是配置mapper.xml文件的位置，容器的位置<br>此处附上thymeleaf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.thymeleaf.prefix=classpath:/Student/</span><br><span class="line">spring.thymeleaf.mode=LEGACYHTML5</span><br><span class="line">spring.thymeleaf.suffix=.html</span><br><span class="line">spring.thymeleaf.encoding=UTF-8</span><br><span class="line">spring.thymeleaf.servlet.content-type=text/html</span><br><span class="line">spring.thymeleaf.cache=false</span><br><span class="line">spring.resources.chain.strategy.content.enabled=true</span><br><span class="line">spring.resources.chain.strategy.content.paths=/**</span><br><span class="line">#thymeleaf end</span><br></pre></td></tr></table></figure></p>
-<ol start="3">
-<li>在应用启动入口xxxxApplication.class加上@MapperScan(“包名”)。<br>主要用意在于告诉spring，dao层接口在哪<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">@MapperScan(&quot;com.example.demo.myDemo.domin&quot;)</span><br><span class="line">public class DemoApplication extends SpringBootServletInitializer &#123;</span><br><span class="line">	@Override</span><br><span class="line">	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;</span><br><span class="line">		return builder.sources(DemoApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(DemoApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><ol>
-<li>每个mapper.xml文件对应一个dao层接口，这是用mapper标签的namespace属性所决定的</li>
-<li>Mybatis是面向SQL语句的框架，不要用Hibernate面向对象的思想去用它,要用SQL语句最简单的思维，比如查询到的外键可以说不是什么关系映射，它就是一个简简单单的一个列的一个值，所以数据容器可以只用基本数据类型去容纳它</li>
-<li><p>关于select标签的association子标签，若只是嵌套结果的用法，可以很简单的当成只是把一部分结果放进一个应用的对象中甚至不需要用association，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resultMap id=&quot;studentResultMap&quot; type=&quot;Student&quot;&gt;</span><br><span class="line">        &lt;id property=&quot;sId&quot; column=&quot;id&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sName&quot; column=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sAge&quot; column=&quot;age&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;sSex&quot; column=&quot;sex&quot; /&gt;</span><br><span class="line">        &lt;!--&lt;association property=&quot;myclass&quot; column=&quot;classid&quot; javaType=&quot;MyClass&quot; select=&quot;selectClass&quot; /&gt;--&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cId&quot; column=&quot;classid&quot; /&gt;</span><br><span class="line">        &lt;result property=&quot;myclass.cName&quot; column=&quot;classname&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>不需要mybatis-config.xml文件，需要配置的属性已经在application.xml中有了</p>
-</li>
-<li>不需要配置事务管理器，Spring Boot中有默认的实现，就算配置了也会被Spring Boot的配置覆盖</li>
-</ol>
+</ul>
+<p>这条语句提供了一种可选的查找文本功能。如果没有传入<code>title</code>，那么所有处于<code>ACTIVE</code>状态的BLOG都会返回；反之若传入了<code>title</code>，那么就会对<code>title</code>一列进行模糊查找并返回 BLOG 结果（细心的读者可能会发现，<code>title</code>参数值是可以包含一些掩码或通配符的）<br>如果希望通过<code>title</code>和<code>author</code>两个参数进行可选搜索该怎么办呢？首先，改变语句的名称让它更具实际意义；然后只要加入另一个条件即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’ </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="choose-when-otherwise"><a href="#choose-when-otherwise" class="headerlink" title="choose, when, otherwise"></a>choose, when, otherwise</h2><p>有时我们不想应用到所有的条件语句，而只想从中择其一项。针对这种情况，MyBatis 提供了 <code>choose</code> 元素，它有点像 Java 中的 <code>switch</code> 语句<br>还是上面的例子，但是这次变为提供了<code>title</code>就按<code>title</code>查找，提供了<code>author</code>就按<code>author</code>查找的情形，若两者都没有提供，就返回所有符合条件的 BLOG（实际情况可能是由管理员按一定策略选出 BLOG 列表，而不是返回大量无意义的随机结果）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG WHERE state = ‘ACTIVE’</span><br><span class="line">  &lt;choose&gt;</span><br><span class="line">    &lt;when test=&quot;title != null&quot;&gt;</span><br><span class="line">      AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;when test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">      AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;otherwise&gt;</span><br><span class="line">      AND featured = 1</span><br><span class="line">    &lt;/otherwise&gt;</span><br><span class="line">  &lt;/choose&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="trim-where-set"><a href="#trim-where-set" class="headerlink" title="trim, where, set"></a>trim, where, set</h2><p>前面几个例子已经合宜地解决了一个臭名昭著的动态 SQL 问题。现在回到<code>if</code>示例，这次我们将<code>ACTIVE = 1</code>也设置成动态的条件，看看会发生什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  WHERE </span><br><span class="line">  &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">    state = #&#123;state&#125;</span><br><span class="line">  &lt;/if&gt; </span><br><span class="line">  &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">    AND title like #&#123;title&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">  &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">    AND author_name like #&#123;author.name&#125;</span><br><span class="line">  &lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>如果这些条件没有一个能匹配上会发生什么？最终这条 SQL 会变成这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE</span><br></pre></td></tr></table></figure></p>
+<p>这会导致查询失败。如果仅仅第二个条件匹配又会怎样？这条 SQL 最终会是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM BLOG</span><br><span class="line">WHERE </span><br><span class="line">AND title like ‘someTitle’</span><br></pre></td></tr></table></figure></p>
+<p>这个查询也会失败。这个问题不能简单地用条件句式来解决，如果你也曾经被迫这样写过，那么你很可能从此以后都不会再写出这种语句了<br>MyBatis 有一个简单的处理，这在 90% 的情况下都会有用。而在不能使用的地方，你可以自定义处理方式来令其正常工作。一处简单的修改就能达到目的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;findActiveBlogLike&quot;</span><br><span class="line">     resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  SELECT * FROM BLOG </span><br><span class="line">  &lt;where&gt; </span><br><span class="line">    &lt;if test=&quot;state != null&quot;&gt;</span><br><span class="line">         state = #&#123;state&#125;</span><br><span class="line">    &lt;/if&gt; </span><br><span class="line">    &lt;if test=&quot;title != null&quot;&gt;</span><br><span class="line">        AND title like #&#123;title&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;author != null and author.name != null&quot;&gt;</span><br><span class="line">        AND author_name like #&#123;author.name&#125;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/where&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p><code>where</code> 元素只会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入<code>WHERE</code>子句。而且，若语句的开头为<code>AND</code>或<code>OR</code>，<code>where</code> 元素也会将它们去除<br>如果 <code>where</code> 元素没有按正常套路出牌，我们可以通过自定义 <code>trim</code> 元素来定制 <code>where</code> 元素的功能。比如，和 <code>where</code> 元素等价的自定义 <code>trim</code> 元素为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;</span><br><span class="line">  ... </span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
+<p><code>prefixOverrides</code> 属性会忽略通过管道分隔的文本序列（注意此例中的空格也是必要的）。它的作用是移除所有指定在 <code>prefixOverrides</code> 属性中的内容，并且插入 <code>prefix</code> 属性中指定的内容<br>类似的用于动态更新语句的解决方案叫做 <code>set</code>。<code>set</code> 元素可以用于动态包含需要更新的列，而舍去其它的。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;update id=&quot;updateAuthorIfNecessary&quot;&gt;</span><br><span class="line">  update Author</span><br><span class="line">    &lt;set&gt;</span><br><span class="line">      &lt;if test=&quot;username != null&quot;&gt;username=#&#123;username&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;password != null&quot;&gt;password=#&#123;password&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;email != null&quot;&gt;email=#&#123;email&#125;,&lt;/if&gt;</span><br><span class="line">      &lt;if test=&quot;bio != null&quot;&gt;bio=#&#123;bio&#125;&lt;/if&gt;</span><br><span class="line">    &lt;/set&gt;</span><br><span class="line">  where id=#&#123;id&#125;</span><br><span class="line">&lt;/update&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里，<code>set</code> 元素会动态前置 SET 关键字，同时也会删掉无关的逗号，因为用了条件语句之后很可能就会在生成的 SQL 语句的后面留下这些逗号。（文档译者注：因为用的是<code>if</code>元素，若最后一个<code>if</code>没有匹配上而前面的匹配上，SQL 语句的最后就会有一个逗号遗留）<br>若你对 set 元素等价的自定义 trim 元素的代码感兴趣，那这就是它的真面目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix=&quot;SET&quot; suffixOverrides=&quot;,&quot;&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure></p>
+<p>注意这里我们删去的是后缀值，同时添加了前缀值</p>
+<h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另外一个常用的操作需求是对一个集合进行遍历，通常是在构建 IN 条件语句的时候。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;domain.blog.Post&quot;&gt;</span><br><span class="line">  SELECT *</span><br><span class="line">  FROM POST P</span><br><span class="line">  WHERE ID in</span><br><span class="line">  &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;</span><br><span class="line">      open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;</span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">  &lt;/foreach&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>foreach 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及在迭代结果之间放置分隔符。这个元素是很智能的，因此它不会偶然地附加多余的分隔符<br>你可以将任何可迭代对象（如 List、Set 等）、Map 对象或者数组对象传递给 foreach 作为集合参数。当使用可迭代对象或者数组时，index 是当前迭代的次数，item 的值是本次迭代获取的元素。当使用 Map 对象（或者 Map.Entry 对象的集合）时，index 是键，item 是值。<br>到此我们已经完成了涉及 XML 配置文件和 XML 映射文件的讨论。下一章将详细探讨 Java API，这样就能提高已创建的映射文件的利用效率</p>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p><code>bind</code> 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id=&quot;selectBlogsLike&quot; resultType=&quot;Blog&quot;&gt;</span><br><span class="line">  &lt;bind name=&quot;pattern&quot; value=&quot;&apos;%&apos; + _parameter.getTitle() + &apos;%&apos;&quot; /&gt;</span><br><span class="line">  SELECT * FROM BLOG</span><br><span class="line">  WHERE title LIKE #&#123;pattern&#125;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
+<p>简单来说就是定义了一个变量</p>
+<h2 id="多数据库的支持"><a href="#多数据库的支持" class="headerlink" title="多数据库的支持"></a>多数据库的支持</h2><p>一个配置了“_databaseId”变量的 databaseIdProvider 可用于动态代码中，这样就可以根据不同的数据库厂商构建特定的语句。比如下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;insert id=&quot;insert&quot;&gt;</span><br><span class="line">  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;oracle&apos;&quot;&gt;</span><br><span class="line">      select seq_users.nextval from dual</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">    &lt;if test=&quot;_databaseId == &apos;db2&apos;&quot;&gt;</span><br><span class="line">      select nextval for seq_users from sysibm.sysdummy1&quot;</span><br><span class="line">    &lt;/if&gt;</span><br><span class="line">  &lt;/selectKey&gt;</span><br><span class="line">  insert into users values (#&#123;id&#125;, #&#123;name&#125;)</span><br><span class="line">&lt;/insert&gt;</span><br></pre></td></tr></table></figure></p>
+<p>来源：mybatis文档(<a href="http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html" target="_blank" rel="noopener">http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html</a>)</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/" data-id="cjpwccu0v00036ou1zybwlvjl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/" data-id="cjq8xr25n0000ksu1ob3ikr1d" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -840,11 +880,11 @@
       <ul>
         
           <li>
-            <a href="/2018/12/17/JS随手记/">JS随手记</a>
+            <a href="/2018/12/29/Redis3.2.100/">Spring Boot集成Redis</a>
           </li>
         
           <li>
-            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
+            <a href="/2018/12/17/JS随手记/">JS随手记</a>
           </li>
         
           <li>
@@ -852,11 +892,11 @@
           </li>
         
           <li>
-            <a href="/2018/12/13/SpringMVC文档概述-Controller相关/">SpringMVC-文档搬运工 Controller相关</a>
+            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
           </li>
         
           <li>
-            <a href="/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/">SpringMVC-文档搬运工 DispatcherServlet和Filters</a>
+            <a href="/2018/12/13/SpringMVC文档概述-Controller相关/">SpringMVC-文档搬运工 Controller相关</a>
           </li>
         
       </ul>

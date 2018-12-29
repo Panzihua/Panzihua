@@ -261,78 +261,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjpwccu2b000v6ou1uicyxa8z" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring Data Jpade 使用" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/22/Spring Data Jpade 使用/" class="article-date">
-  <time datetime="2018-11-21T16:00:00.000Z" itemprop="datePublished">2018-11-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/22/Spring Data Jpade 使用/">Spring Date Jpa的使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Jpa"><a href="#Jpa" class="headerlink" title="Jpa"></a>Jpa</h2><p>JPA(Java Persistence API)是Sun官方提出的Java持久化规范。它为Java开发人员提供了一种对象/关联映射工具来管理Java应用中的关系数据。他的出现主要是为了简化现有的持久化开发工作和整合ORM技术，结束现在Hibernate，TopLink，JDO等ORM框架各自为营的局面。值得注意的是，JPA是在充分吸收了现有Hibernate，TopLink，JDO等ORM框架的基础上发展而来的，具有易于使用，伸缩性强等优点。从目前的开发社区的反应上看，JPA受到了极大的支持和赞扬，其中就包括了Spring与EJB3.0的开发团队<br>JPA是一套规范，不是一套产品，那么像Hibernate,TopLink,JDO他们是一套产品，如果说这些产品实现了这个JPA规范，那么我们就可以叫他们为JPA的实现产品</p>
-<h3 id="Spring-Data-Jpa"><a href="#Spring-Data-Jpa" class="headerlink" title="Spring Data Jpa"></a>Spring Data Jpa</h3><p>Spring Data JPA 是 Spring 基于 ORM 框架、JPA 规范的基础上封装的一套JPA应用框架，可使开发者用极简的代码即可实现对数据的访问和操作。它提供了包括增删改查等在内的常用功能，且易于扩展！学习并使用 Spring Data JPA 可以极大提高开发效率<br>解脱了DAO层的操作，基本上所有CRUD都可以依赖于它来实现</p>
-<h2 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h2><p>一种是spring data默认已经实现，一种是根据查询的方法来自动解析成SQL<br>默认实现的方法：</p>
-<ol>
-<li>继承JpaRepository<br><code>public interface UserRepository extends JpaRepository&lt;User, Long&gt;{}</code></li>
-<li>默认方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testBaseQuery() throws Exception &#123;</span><br><span class="line">	User user=new User();</span><br><span class="line">	userRepository.findAll();</span><br><span class="line">	userRepository.findOne(1l);</span><br><span class="line">	userRepository.save(user);</span><br><span class="line">	userRepository.delete(user);</span><br><span class="line">	userRepository.count();</span><br><span class="line">	userRepository.exists(1l);</span><br><span class="line">	// ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="自定义简单查询"><a href="#自定义简单查询" class="headerlink" title="自定义简单查询"></a>自定义简单查询</h2><p>根据方法名自动生成Sql，主要语法<code>findXXBy,readAXXBy,queryXXBy,countXXBy, getXXBy</code>后面跟属性名称<br><code>User findByUserName(String userName);</code><br>可以加一些关键字<code>And、 Or</code><br><code>User findByUserNameOrEmail(String username, String email);</code><br>修改、删除和统计也类似<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Long deleteById(Long id);</span><br><span class="line">Long countByUserName(String userName)</span><br></pre></td></tr></table></figure></p>
-<p>基本上Sql体系中的关键词都可以用，例如<code>LIKE、 IgnoreCase、 OrderBy</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; findByEmailLike(String email);</span><br><span class="line">User findByUserNameIgnoreCase(String userName);</span><br><span class="line">List&lt;User&gt; findByUserNameOrderByEmailDesc(String email);</span><br></pre></td></tr></table></figure></p>
-<p>具体关键字，使用方法和生成Sql可以参考<br>(<a href="http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html" target="_blank" rel="noopener">http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html</a>)</p>
-<h2 id="复杂查询"><a href="#复杂查询" class="headerlink" title="复杂查询"></a>复杂查询</h2><h3 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h3><p>查询的方法中，需要传入参数Pageable ,当查询中有多个参数的时候Pageable建议做为最后一个参数传入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;User&gt; findALL(Pageable pageable);</span><br><span class="line">Page&lt;User&gt; findByUserName(String userName,Pageable pageable);</span><br></pre></td></tr></table></figure></p>
-<p>Pageable 是spring封装的分页实现类，使用的时候需要传入页数、每页条数和排序规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testPageQuery() throws Exception &#123;</span><br><span class="line">	int page=1,size=10;</span><br><span class="line">	Sort sort = new Sort(Direction.DESC, &quot;id&quot;);</span><br><span class="line">    Pageable pageable = new PageRequest(page, size, sort);</span><br><span class="line">    userRepository.findALL(pageable);</span><br><span class="line">    userRepository.findByUserName(&quot;testName&quot;, pageable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="限制查询"><a href="#限制查询" class="headerlink" title="限制查询"></a>限制查询</h3><p>有时候我们只需要查询前N个元素，或者支取前一个实体<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ser findFirstByOrderByLastnameAsc();</span><br><span class="line">User findTopByOrderByAgeDesc();</span><br><span class="line">Page&lt;User&gt; queryFirst10ByLastname(String lastname, Pageable pageable);</span><br><span class="line">List&lt;User&gt; findFirst10ByLastname(String lastname, Sort sort);</span><br><span class="line">List&lt;User&gt; findTop10ByLastname(String lastname, Pageable pageable);</span><br></pre></td></tr></table></figure></p>
-<h3 id="自定义Sql查询"><a href="#自定义Sql查询" class="headerlink" title="自定义Sql查询"></a>自定义Sql查询</h3><p>在SQL的查询方法上面使用<code>@Query</code>注解，如涉及到删除和修改在需要加上<code>@Modifying</code>也可以根据需要添加<code>@Transactional</code>对事物的支持，查询超时的设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Modifying</span><br><span class="line">@Query(&quot;update User u set u.userName = ?1 where u.id = ?2&quot;)</span><br><span class="line">int modifyByIdAndUserId(String  userName, Long id);</span><br><span class="line">	</span><br><span class="line">@Transactional</span><br><span class="line">@Modifying</span><br><span class="line">@Query(&quot;delete from User where id = ?1&quot;)</span><br><span class="line">void deleteByUserId(Long id);</span><br><span class="line">  </span><br><span class="line">@Transactional(timeout = 10)</span><br><span class="line">@Query(&quot;select u from User u where u.emailAddress = ?1&quot;)</span><br><span class="line">User findByEmailAddress(String emailAddress);</span><br></pre></td></tr></table></figure></p>
-<h3 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h3><p>多表查询在spring data jpa中有两种实现方式，第一种是利用hibernate的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里主要第二种方式</p>
-<ol>
-<li>定义一个结果集的接口类<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public interface HotelSummary &#123;</span><br><span class="line"></span><br><span class="line">	City getCity();</span><br><span class="line"></span><br><span class="line">	String getName();</span><br><span class="line"></span><br><span class="line">	Double getAverageRating();</span><br><span class="line"></span><br><span class="line">	default Integer getAverageRatingRounded() &#123;</span><br><span class="line">		return getAverageRating() == null ? null : (int) Math.round(getAverageRating());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>查询的方法返回类型设置为新创建的接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Query(&quot;select h.city as city, h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r where h.city = ?1 group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(City city, Pageable pageable);</span><br><span class="line"></span><br><span class="line">@Query(&quot;select h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r  group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(Pageable pageable);</span><br></pre></td></tr></table></figure></p>
-<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;HotelSummary&gt; hotels = this.hotelRepository.findByCity(new PageRequest(0, 10, Direction.ASC, &quot;name&quot;));</span><br><span class="line">for(HotelSummary summay:hotels)&#123;</span><br><span class="line">		System.out.println(&quot;Name&quot; +summay.getName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在运行中Spring会给接口（HotelSummary）自动生产一个代理类来接收返回的结果，代码汇总使用getXX的形式来获取</p>
-<h2 id="多数据源的支持"><a href="#多数据源的支持" class="headerlink" title="多数据源的支持"></a>多数据源的支持</h2><ol>
-<li>配置多数据源</li>
-<li>不同源的实体类放入不同包路径</li>
-<li>声明不同的包路径下使用不同的数据源、事务支持<h3 id="异构数据库多远支持"><a href="#异构数据库多远支持" class="headerlink" title="异构数据库多远支持"></a>异构数据库多远支持</h3>对mysql的支持，也需要对mongodb的查询<br>实体类声明@Entity 关系型数据库支持类型、声明@Document 为mongodb支持类型，不同的数据源使用不同的实体就可以了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">interface PersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface UserRepository extends Repository&lt;User, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Document</span><br><span class="line">public class User &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>但是，如果User用户既使用mysql也使用mongodb呢，也可以做混合使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface JpaPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface MongoDBPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">@Document</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>也可以通过对不同的包路径进行声明，比如A包路径下使用mysql,B包路径下使用mongoDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@EnableJpaRepositories(basePackages = &quot;com.neo.repositories.jpa&quot;)</span><br><span class="line">@EnableMongoRepositories(basePackages = &quot;com.neo.repositories.mongo&quot;)</span><br><span class="line">interface Configuration &#123; &#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="使用枚举"><a href="#使用枚举" class="headerlink" title="使用枚举"></a>使用枚举</h3><p>使用枚举的时候，我们希望数据库中存储的是枚举对应的String类型，而不是枚举的索引值，需要在属性上面添加<code>@Enumerated(EnumType.STRING)</code>注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Enumerated(EnumType.STRING) </span><br><span class="line">@Column(nullable = true)</span><br><span class="line">private UserType type;</span><br></pre></td></tr></table></figure></p>
-<h3 id="不需要和数据库映射的属性"><a href="#不需要和数据库映射的属性" class="headerlink" title="不需要和数据库映射的属性"></a>不需要和数据库映射的属性</h3><p>正常情况下我们在实体类上加入注解<code>@Entity</code>，就会让实体类和表相关连如果其中某个属性我们不需要和数据库来关联只是在展示的时候做计算，只需要加上<code>@Transient</code>属性既可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Transient</span><br><span class="line">private String  userName;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/Spring Data Jpade 使用/" data-id="cjpwccu0x00056ou1qf4ne0hx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/" data-id="cjq8xr271000vksu1hxpl0o4s" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -448,7 +377,144 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/22/thymeleaf使用详解/" data-id="cjpwccu1w000q6ou1ou6nzo5m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/22/thymeleaf使用详解/" data-id="cjq8xr26l000qksu1kbkl03sz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring Data Jpade 使用" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/22/Spring Data Jpade 使用/" class="article-date">
+  <time datetime="2018-11-21T16:00:00.000Z" itemprop="datePublished">2018-11-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/22/Spring Data Jpade 使用/">Spring Date Jpa的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Jpa"><a href="#Jpa" class="headerlink" title="Jpa"></a>Jpa</h2><p>JPA(Java Persistence API)是Sun官方提出的Java持久化规范。它为Java开发人员提供了一种对象/关联映射工具来管理Java应用中的关系数据。他的出现主要是为了简化现有的持久化开发工作和整合ORM技术，结束现在Hibernate，TopLink，JDO等ORM框架各自为营的局面。值得注意的是，JPA是在充分吸收了现有Hibernate，TopLink，JDO等ORM框架的基础上发展而来的，具有易于使用，伸缩性强等优点。从目前的开发社区的反应上看，JPA受到了极大的支持和赞扬，其中就包括了Spring与EJB3.0的开发团队<br>JPA是一套规范，不是一套产品，那么像Hibernate,TopLink,JDO他们是一套产品，如果说这些产品实现了这个JPA规范，那么我们就可以叫他们为JPA的实现产品</p>
+<h3 id="Spring-Data-Jpa"><a href="#Spring-Data-Jpa" class="headerlink" title="Spring Data Jpa"></a>Spring Data Jpa</h3><p>Spring Data JPA 是 Spring 基于 ORM 框架、JPA 规范的基础上封装的一套JPA应用框架，可使开发者用极简的代码即可实现对数据的访问和操作。它提供了包括增删改查等在内的常用功能，且易于扩展！学习并使用 Spring Data JPA 可以极大提高开发效率<br>解脱了DAO层的操作，基本上所有CRUD都可以依赖于它来实现</p>
+<h2 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h2><p>一种是spring data默认已经实现，一种是根据查询的方法来自动解析成SQL<br>默认实现的方法：</p>
+<ol>
+<li>继承JpaRepository<br><code>public interface UserRepository extends JpaRepository&lt;User, Long&gt;{}</code></li>
+<li>默认方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testBaseQuery() throws Exception &#123;</span><br><span class="line">	User user=new User();</span><br><span class="line">	userRepository.findAll();</span><br><span class="line">	userRepository.findOne(1l);</span><br><span class="line">	userRepository.save(user);</span><br><span class="line">	userRepository.delete(user);</span><br><span class="line">	userRepository.count();</span><br><span class="line">	userRepository.exists(1l);</span><br><span class="line">	// ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="自定义简单查询"><a href="#自定义简单查询" class="headerlink" title="自定义简单查询"></a>自定义简单查询</h2><p>根据方法名自动生成Sql，主要语法<code>findXXBy,readAXXBy,queryXXBy,countXXBy, getXXBy</code>后面跟属性名称<br><code>User findByUserName(String userName);</code><br>可以加一些关键字<code>And、 Or</code><br><code>User findByUserNameOrEmail(String username, String email);</code><br>修改、删除和统计也类似<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Long deleteById(Long id);</span><br><span class="line">Long countByUserName(String userName)</span><br></pre></td></tr></table></figure></p>
+<p>基本上Sql体系中的关键词都可以用，例如<code>LIKE、 IgnoreCase、 OrderBy</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; findByEmailLike(String email);</span><br><span class="line">User findByUserNameIgnoreCase(String userName);</span><br><span class="line">List&lt;User&gt; findByUserNameOrderByEmailDesc(String email);</span><br></pre></td></tr></table></figure></p>
+<p>具体关键字，使用方法和生成Sql可以参考<br>(<a href="http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html" target="_blank" rel="noopener">http://www.ityouknow.com/springboot/2016/08/20/spring-boo-jpa.html</a>)</p>
+<h2 id="复杂查询"><a href="#复杂查询" class="headerlink" title="复杂查询"></a>复杂查询</h2><h3 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h3><p>查询的方法中，需要传入参数Pageable ,当查询中有多个参数的时候Pageable建议做为最后一个参数传入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;User&gt; findALL(Pageable pageable);</span><br><span class="line">Page&lt;User&gt; findByUserName(String userName,Pageable pageable);</span><br></pre></td></tr></table></figure></p>
+<p>Pageable 是spring封装的分页实现类，使用的时候需要传入页数、每页条数和排序规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testPageQuery() throws Exception &#123;</span><br><span class="line">	int page=1,size=10;</span><br><span class="line">	Sort sort = new Sort(Direction.DESC, &quot;id&quot;);</span><br><span class="line">    Pageable pageable = new PageRequest(page, size, sort);</span><br><span class="line">    userRepository.findALL(pageable);</span><br><span class="line">    userRepository.findByUserName(&quot;testName&quot;, pageable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="限制查询"><a href="#限制查询" class="headerlink" title="限制查询"></a>限制查询</h3><p>有时候我们只需要查询前N个元素，或者支取前一个实体<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ser findFirstByOrderByLastnameAsc();</span><br><span class="line">User findTopByOrderByAgeDesc();</span><br><span class="line">Page&lt;User&gt; queryFirst10ByLastname(String lastname, Pageable pageable);</span><br><span class="line">List&lt;User&gt; findFirst10ByLastname(String lastname, Sort sort);</span><br><span class="line">List&lt;User&gt; findTop10ByLastname(String lastname, Pageable pageable);</span><br></pre></td></tr></table></figure></p>
+<h3 id="自定义Sql查询"><a href="#自定义Sql查询" class="headerlink" title="自定义Sql查询"></a>自定义Sql查询</h3><p>在SQL的查询方法上面使用<code>@Query</code>注解，如涉及到删除和修改在需要加上<code>@Modifying</code>也可以根据需要添加<code>@Transactional</code>对事物的支持，查询超时的设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Modifying</span><br><span class="line">@Query(&quot;update User u set u.userName = ?1 where u.id = ?2&quot;)</span><br><span class="line">int modifyByIdAndUserId(String  userName, Long id);</span><br><span class="line">	</span><br><span class="line">@Transactional</span><br><span class="line">@Modifying</span><br><span class="line">@Query(&quot;delete from User where id = ?1&quot;)</span><br><span class="line">void deleteByUserId(Long id);</span><br><span class="line">  </span><br><span class="line">@Transactional(timeout = 10)</span><br><span class="line">@Query(&quot;select u from User u where u.emailAddress = ?1&quot;)</span><br><span class="line">User findByEmailAddress(String emailAddress);</span><br></pre></td></tr></table></figure></p>
+<h3 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h3><p>多表查询在spring data jpa中有两种实现方式，第一种是利用hibernate的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里主要第二种方式</p>
+<ol>
+<li>定义一个结果集的接口类<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public interface HotelSummary &#123;</span><br><span class="line"></span><br><span class="line">	City getCity();</span><br><span class="line"></span><br><span class="line">	String getName();</span><br><span class="line"></span><br><span class="line">	Double getAverageRating();</span><br><span class="line"></span><br><span class="line">	default Integer getAverageRatingRounded() &#123;</span><br><span class="line">		return getAverageRating() == null ? null : (int) Math.round(getAverageRating());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>查询的方法返回类型设置为新创建的接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Query(&quot;select h.city as city, h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r where h.city = ?1 group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(City city, Pageable pageable);</span><br><span class="line"></span><br><span class="line">@Query(&quot;select h.name as name, avg(r.rating) as averageRating &quot;</span><br><span class="line">		- &quot;from Hotel h left outer join h.reviews r  group by h&quot;)</span><br><span class="line">Page&lt;HotelSummary&gt; findByCity(Pageable pageable);</span><br></pre></td></tr></table></figure></p>
+<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Page&lt;HotelSummary&gt; hotels = this.hotelRepository.findByCity(new PageRequest(0, 10, Direction.ASC, &quot;name&quot;));</span><br><span class="line">for(HotelSummary summay:hotels)&#123;</span><br><span class="line">		System.out.println(&quot;Name&quot; +summay.getName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在运行中Spring会给接口（HotelSummary）自动生产一个代理类来接收返回的结果，代码汇总使用getXX的形式来获取</p>
+<h2 id="多数据源的支持"><a href="#多数据源的支持" class="headerlink" title="多数据源的支持"></a>多数据源的支持</h2><ol>
+<li>配置多数据源</li>
+<li>不同源的实体类放入不同包路径</li>
+<li>声明不同的包路径下使用不同的数据源、事务支持<h3 id="异构数据库多远支持"><a href="#异构数据库多远支持" class="headerlink" title="异构数据库多远支持"></a>异构数据库多远支持</h3>对mysql的支持，也需要对mongodb的查询<br>实体类声明@Entity 关系型数据库支持类型、声明@Document 为mongodb支持类型，不同的数据源使用不同的实体就可以了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">interface PersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface UserRepository extends Repository&lt;User, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Document</span><br><span class="line">public class User &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>但是，如果User用户既使用mysql也使用mongodb呢，也可以做混合使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface JpaPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface MongoDBPersonRepository extends Repository&lt;Person, Long&gt; &#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">@Document</span><br><span class="line">public class Person &#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以通过对不同的包路径进行声明，比如A包路径下使用mysql,B包路径下使用mongoDB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@EnableJpaRepositories(basePackages = &quot;com.neo.repositories.jpa&quot;)</span><br><span class="line">@EnableMongoRepositories(basePackages = &quot;com.neo.repositories.mongo&quot;)</span><br><span class="line">interface Configuration &#123; &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="使用枚举"><a href="#使用枚举" class="headerlink" title="使用枚举"></a>使用枚举</h3><p>使用枚举的时候，我们希望数据库中存储的是枚举对应的String类型，而不是枚举的索引值，需要在属性上面添加<code>@Enumerated(EnumType.STRING)</code>注解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Enumerated(EnumType.STRING) </span><br><span class="line">@Column(nullable = true)</span><br><span class="line">private UserType type;</span><br></pre></td></tr></table></figure></p>
+<h3 id="不需要和数据库映射的属性"><a href="#不需要和数据库映射的属性" class="headerlink" title="不需要和数据库映射的属性"></a>不需要和数据库映射的属性</h3><p>正常情况下我们在实体类上加入注解<code>@Entity</code>，就会让实体类和表相关连如果其中某个属性我们不需要和数据库来关联只是在展示的时候做计算，只需要加上<code>@Transient</code>属性既可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Transient</span><br><span class="line">private String  userName;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/22/Spring Data Jpade 使用/" data-id="cjq8xr25w0003ksu1umqwkkxy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring-Boot入门" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/21/Spring-Boot入门/" class="article-date">
+  <time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished">2018-11-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/21/Spring-Boot入门/">Spring boot快速入门构建</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Spring-Boot简介"><a href="#Spring-Boot简介" class="headerlink" title="Spring Boot简介"></a>Spring Boot简介</h2><p>Spring Boot 集合Maven快速配置项目所需要的开发环境的框架。</p>
+<hr>
+<p>Maven构建入口：(<a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io/</a>)</p>
+<hr>
+<h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><p>三个基础文件</p>
+<ul>
+<li>src/main/java 程序开发以及主程序入口</li>
+<li>src/main/resources 配置文件</li>
+<li><p>src/test/java 测试程序</p>
+<h3 id="Spring-Boot建议目录："><a href="#Spring-Boot建议目录：" class="headerlink" title="Spring Boot建议目录："></a>Spring Boot建议目录：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">com</span><br><span class="line">+- example</span><br><span class="line">    +- myproject</span><br><span class="line">    +- Application.java</span><br><span class="line">    |</span><br><span class="line">    +- domain</span><br><span class="line">    |  +- Customer.java</span><br><span class="line">    |  +- CustomerRepository.java</span><br><span class="line">    |</span><br><span class="line">    +- service</span><br><span class="line">    |  +- CustomerService.java</span><br><span class="line">    |</span><br><span class="line">    +- controller</span><br><span class="line">    |  +- CustomerController.java</span><br><span class="line">    |</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Application.java 建议放到根目录下面,主要用于做一些框架配置</p>
+</li>
+<li>domain目录主要用于实体（Entity）与数据访问层（Repository）</li>
+<li>service 层主要是业务类代码</li>
+<li><p>controller 负责页面访问控制</p>
+<h2 id="引入Web模块-快速搭建Web"><a href="#引入Web模块-快速搭建Web" class="headerlink" title="引入Web模块(快速搭建Web)"></a>引入Web模块(快速搭建Web)</h2><p>在pom.xml中添加支持Web的模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>pom.xml具有两个默认模块：</p>
+<ul>
+<li><code>spring-boot-starter</code> ：核心模块，包括自动配置支持、日志和YAML</li>
+<li><code>spring-boot-starter-test</code> ：测试模块，包括JUnit、HamcrestMockito</li>
+</ul>
+<h2 id="编写Controller内容"><a href="#编写Controller内容" class="headerlink" title="编写Controller内容"></a>编写Controller内容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">public class HelloWorldController &#123;</span><br><span class="line">    @RequestMapping(&quot;/hello&quot;)</span><br><span class="line">    public String index() &#123;</span><br><span class="line">        return &quot;Hello World&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><code>@RestController</code> 就是Controller里的方法都按照json格式输出，无需再写jackjson配置<br><code>@ResquestMapping</code> 是请求拦截<br>启动程序，localhost:8080/hello，即看到效果</p>
+<h2 id="开发环境的配置"><a href="#开发环境的配置" class="headerlink" title="开发环境的配置"></a>开发环境的配置</h2><p>热部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">&lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/21/Spring-Boot入门/" data-id="cjq8xr2610008ksu1za4x3j3a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -533,73 +599,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/21/Web综合开发/" data-id="cjpwccu1v000o6ou1bxiyu9bb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Boot入门" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/21/Spring-Boot入门/" class="article-date">
-  <time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished">2018-11-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/21/Spring-Boot入门/">Spring boot快速入门构建</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Spring-Boot简介"><a href="#Spring-Boot简介" class="headerlink" title="Spring Boot简介"></a>Spring Boot简介</h2><p>Spring Boot 集合Maven快速配置项目所需要的开发环境的框架。</p>
-<hr>
-<p>Maven构建入口：(<a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io/</a>)</p>
-<hr>
-<h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><p>三个基础文件</p>
-<ul>
-<li>src/main/java 程序开发以及主程序入口</li>
-<li>src/main/resources 配置文件</li>
-<li><p>src/test/java 测试程序</p>
-<h3 id="Spring-Boot建议目录："><a href="#Spring-Boot建议目录：" class="headerlink" title="Spring Boot建议目录："></a>Spring Boot建议目录：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">com</span><br><span class="line">+- example</span><br><span class="line">    +- myproject</span><br><span class="line">    +- Application.java</span><br><span class="line">    |</span><br><span class="line">    +- domain</span><br><span class="line">    |  +- Customer.java</span><br><span class="line">    |  +- CustomerRepository.java</span><br><span class="line">    |</span><br><span class="line">    +- service</span><br><span class="line">    |  +- CustomerService.java</span><br><span class="line">    |</span><br><span class="line">    +- controller</span><br><span class="line">    |  +- CustomerController.java</span><br><span class="line">    |</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Application.java 建议放到根目录下面,主要用于做一些框架配置</p>
-</li>
-<li>domain目录主要用于实体（Entity）与数据访问层（Repository）</li>
-<li>service 层主要是业务类代码</li>
-<li><p>controller 负责页面访问控制</p>
-<h2 id="引入Web模块-快速搭建Web"><a href="#引入Web模块-快速搭建Web" class="headerlink" title="引入Web模块(快速搭建Web)"></a>引入Web模块(快速搭建Web)</h2><p>在pom.xml中添加支持Web的模块：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-<p>pom.xml具有两个默认模块：</p>
-<ul>
-<li><code>spring-boot-starter</code> ：核心模块，包括自动配置支持、日志和YAML</li>
-<li><code>spring-boot-starter-test</code> ：测试模块，包括JUnit、HamcrestMockito</li>
-</ul>
-<h2 id="编写Controller内容"><a href="#编写Controller内容" class="headerlink" title="编写Controller内容"></a>编写Controller内容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">public class HelloWorldController &#123;</span><br><span class="line">    @RequestMapping(&quot;/hello&quot;)</span><br><span class="line">    public String index() &#123;</span><br><span class="line">        return &quot;Hello World&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><code>@RestController</code> 就是Controller里的方法都按照json格式输出，无需再写jackjson配置<br><code>@ResquestMapping</code> 是请求拦截<br>启动程序，localhost:8080/hello，即看到效果</p>
-<h2 id="开发环境的配置"><a href="#开发环境的配置" class="headerlink" title="开发环境的配置"></a>开发环境的配置</h2><p>热部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">&lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/21/Spring-Boot入门/" data-id="cjpwccu1c000d6ou1dsisv939" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/21/Web综合开发/" data-id="cjq8xr26j000oksu1ge3jjmkf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
@@ -661,11 +661,11 @@
       <ul>
         
           <li>
-            <a href="/2018/12/17/JS随手记/">JS随手记</a>
+            <a href="/2018/12/29/Redis3.2.100/">Spring Boot集成Redis</a>
           </li>
         
           <li>
-            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
+            <a href="/2018/12/17/JS随手记/">JS随手记</a>
           </li>
         
           <li>
@@ -673,11 +673,11 @@
           </li>
         
           <li>
-            <a href="/2018/12/13/SpringMVC文档概述-Controller相关/">SpringMVC-文档搬运工 Controller相关</a>
+            <a href="/2018/12/14/SpringMVC文档概述-异步请求/">SpringMVC-文档搬运工 异步请求</a>
           </li>
         
           <li>
-            <a href="/2018/12/13/SpringMVC文档概述-DispatcherServlet和Filters/">SpringMVC-文档搬运工 DispatcherServlet和Filters</a>
+            <a href="/2018/12/13/SpringMVC文档概述-Controller相关/">SpringMVC-文档搬运工 Controller相关</a>
           </li>
         
       </ul>

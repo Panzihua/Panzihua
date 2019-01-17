@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API 安装因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(https://github.com/dmajkic/redis/downloads) 启动启动服务器：redis-servser.exe red">
+<meta name="keywords" content="笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot集成Redis">
+<meta property="og:url" content="http://yoursite.com/2018/12/29/Redis3.2.100/index.html">
+<meta property="og:site_name" content="Panzihua_Blog">
+<meta property="og:description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API 安装因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(https://github.com/dmajkic/redis/downloads) 启动启动服务器：redis-servser.exe red">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-29T03:56:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Boot集成Redis">
+<meta name="twitter:description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API 安装因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(https://github.com/dmajkic/redis/downloads) 启动启动服务器：redis-servser.exe red">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/29/Redis3.2.100/">
+
+
+
+
+
+  <title>Spring Boot集成Redis | Panzihua_Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Panzihua_Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/29/Redis3.2.100/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panzihua">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panzihua_Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring Boot集成Redis</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-29T00:00:00+08:00">
+                2018-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>因为Redis官方不支持Windows上运行，所以附上微软提供的Windows Redis(<a href="https://github.com/dmajkic/redis/downloads" target="_blank" rel="noopener">https://github.com/dmajkic/redis/downloads</a>)</p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>启动服务器：<code>redis-servser.exe redis.windows.conf</code><br>开启客户机：<code>redis-cli</code></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p><code>redis 127.0.0.1:6379&gt; CONFIG GET CONFIG_SETTING_NAME</code><br><code>redis 127.0.0.1:6379&gt; CONFIG GET *</code>获取所有配置项<br>其他命令与数据类型参考：(<a href="http://www.redis.net.cn/tutorial/3503.html" target="_blank" rel="noopener">http://www.redis.net.cn/tutorial/3503.html</a>)</p>
+<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><p>添加依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>添加properties配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.database=0</span><br><span class="line">spring.redis.host=127.0.0.1</span><br><span class="line">spring.redis.port=6379</span><br><span class="line">spring.redis.jedis.pool.max-active=8</span><br><span class="line">spring.redis.jedis.pool.max-idle=8</span><br><span class="line">spring.redis.lettuce.pool.min-idle=0</span><br><span class="line">spring.cache.cache-names=cache1,cache2 //可能仅仅只需要添加这个配置，若在本地测试的话</span><br></pre></td></tr></table></figure></p>
+<p>Controller代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/test&quot;)</span><br><span class="line">    public String test()&#123;</span><br><span class="line">        DemoInfo loaded = service.findById(1);</span><br><span class="line">        System.out.println(&quot;loaded=&quot;+loaded);</span><br><span class="line">        DemoInfo cached = service.findById(1);</span><br><span class="line">        System.out.println(&quot;cached=&quot;+cached);</span><br><span class="line">        loaded = service.findById(2);</span><br><span class="line">        System.out.println(&quot;loaded2=&quot;+loaded);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里执行了两次一样的查询，一次新的查询(会在结果中体现出来)<br>Service代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class DemoInfoServiceImpl implements DemoInfoService &#123;</span><br><span class="line">    @Resource(name = &quot;demoInfoRepository&quot;)</span><br><span class="line">    private DemoInfoRepository repository;</span><br><span class="line"></span><br><span class="line">    @Qualifier(&quot;stringRedisTemplate&quot;)</span><br><span class="line">    @Autowired</span><br><span class="line">    private StringRedisTemplate template;</span><br><span class="line"></span><br><span class="line">    @Cacheable(keyGenerator = &quot;myKeyGenerator&quot;, value = &quot;demoInfoCache&quot;) //缓存,这里没有指定key</span><br><span class="line">    @Override</span><br><span class="line">    public DemoInfo findById(int id) &#123;</span><br><span class="line">        System.out.println(&quot;DemoInfoServiceImpl.findById()=========从数据库中进行获取的....id=&quot;+id);</span><br><span class="line">        return repository.findDemoInfoById(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void test() &#123;</span><br><span class="line">        ValueOperations&lt;String,String&gt; valueOperations = template.opsForValue();</span><br><span class="line">        valueOperations.set(&quot;mykey&quot;,&quot;random&quot;);</span><br><span class="line">        System.out.println(valueOperations.get(&quot;demoInfo&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>@Qualifier</code>这里指定注入的类型，StringRedisTemplate是RedisTemplate的子类，注入那个都行<br>利用template api对Redis进行操作<br><code>@Cacheable</code>注解在这里声明<code>Spring</code> 会将该方法的返回参数进行缓存，通过判断<code>key</code>是否存在, 如果存在则直接返回缓存中的数据<br>参数：</p>
+<ul>
+<li>value: 缓存的名称. 至少需要指定一个</li>
+<li>key: 存放到Redis中, K-V对的K，可以缺省, 缺省的话Spring会使用参数名称加参数值的形式作为K. 一般情况下这种情况没有问题, 可是当其他方法的参数名和参数值一样时, 这种方法就不是那么可靠了. 所以key建议自己重新指定<br>例子中的Key指定了自定义的生成器，稍后会贴<br><code>@CachePut</code>一般放置在更新函数中. 与<code>@Cacheable</code>不同的是不管key在Redis是否存在都会将返回结果进行缓存<br><code>@CacheEvict</code> 用来清除缓存<br><code>@CacheConfig</code> 如果每次都需要@<code>Cacheable @CachePut @CacheEvict</code>为指定同一个<code>value</code>那会显得比较麻烦. 使用<code>@Cacheing</code>可以统一为该类中的@Cache<em>注解指定<code>value</code> <code>keyGenerator</code>等注解<br>@Cache</em> 注解可用于任何方法，不局限于Service层中，在网上见过例子用于Repository中<br>Repository代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Repository(&quot;demoInfoRepository&quot;)</span><br><span class="line">public interface DemoInfoRepository extends JpaRepository&lt;DemoInfo, Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">    DemoInfo findDemoInfoById(int id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>根据id查询<br>Key生成器实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component(&quot;myKeyGenerator&quot;)</span><br><span class="line">public class MyKeyGenerator implements KeyGenerator &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">        System.out.println(&quot;KeyGenerator()&quot;);</span><br><span class="line"></span><br><span class="line">        StringBuilder sb = new StringBuilder();</span><br><span class="line">        sb.append(target.getClass().getName());</span><br><span class="line">        sb.append(method.getName());</span><br><span class="line">        for (Object o : params)&#123;</span><br><span class="line">            sb.append(o.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;keyGenerator=&quot; + sb.toString());</span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要实现<code>KeyGenerator</code>接口<br>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">loaded=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById1</span><br><span class="line">cached=id=1 name=张三 password=123456</span><br><span class="line">KeyGenerator()</span><br><span class="line">keyGenerator=com.example.demo.myDemo.service.DemoInfoServiceImplfindById2</span><br><span class="line">loaded2=id=2 name=李四 password=45678</span><br></pre></td></tr></table></figure></p>
+<p>因为之前已进行过运行，redis存在缓存数据<br>实际上第一次查询时会输出”从数据库中获取”(在Service层中体现)<br>第二次进行一样的查询因为在redis中已存在相同的key，所以直接从缓存中获取，并不调用service方法<br>第三次查询时新的查询，缓存中不存在，所以会输出”从数据库中获取”</p>
+<p>补充：</p>
+<h2 id="Spring-Data-Redis"><a href="#Spring-Data-Redis" class="headerlink" title="Spring Data Redis"></a>Spring Data Redis</h2><p>简介：Spring支持Redis所封装的类，包含了利用template对象对Redis进行操作等。</p>
+<h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><p>Redis2.6以上版本，Spring Data Redis内部集成Lettuce和Jedis</p>
+<h3 id="创建连接"><a href="#创建连接" class="headerlink" title="创建连接"></a>创建连接</h3><p>org.springframework.data.redis.connection负责检索和处理回收连接</p>
+<h3 id="配置连接"><a href="#配置连接" class="headerlink" title="配置连接"></a>配置连接</h3><p>Lettuce与Jedis大同小异，通过@Configuration注解配置<br>以下例子为Jedis<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">class RedisConfiguration &#123;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public JedisConnectionFactory redisConnectionFactory() &#123;</span><br><span class="line"></span><br><span class="line">    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(&quot;server&quot;, 6379);</span><br><span class="line">    return new JedisConnectionFactory(config);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="工作类-RedisTemplate"><a href="#工作类-RedisTemplate" class="headerlink" title="工作类 RedisTemplate"></a>工作类 RedisTemplate</h3><p>由Factory返回的高级操作类，代表着目前的连接。封装了底层的序列化与反序列化。<br>提供的operations接口</p>
+<ul>
+<li>GeoOperations</li>
+<li>HashOperations</li>
+<li>HyperLogLogOperations</li>
+<li>ListOperations</li>
+<li>SetOperations</li>
+<li>ValueOperations</li>
+<li>ZSetOperations<br>通过调用template的opsFORxxx返回operation类进行操作，只对指定的数据类型有效<br>而BoundOperation接口</li>
+<li>BoundGeoOperations</li>
+<li>BoundHashOperations</li>
+<li>BoundKeyOperations</li>
+<li>BoundListOperations</li>
+<li>BoundSetOperations</li>
+<li>BoundValueOperations</li>
+<li>BoundZSetOperations<br>通过调用template的boundxxxOps(key)返回的operation类进行操作，已绑定指定数据类型的特定key，只可对该对象操作<h3 id="通过回调Callback与RedisConnection直接对话"><a href="#通过回调Callback与RedisConnection直接对话" class="headerlink" title="通过回调Callback与RedisConnection直接对话"></a>通过回调Callback与RedisConnection直接对话</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void useCallback() &#123;</span><br><span class="line"></span><br><span class="line">  redisTemplate.execute(new RedisCallback&lt;Object&gt;() &#123;</span><br><span class="line">    public Object doInRedis(RedisConnection connection) throws DataAccessException &#123;</span><br><span class="line">      Long size = connection.dbSize();</span><br><span class="line">      // Can cast to StringRedisConnection if using a StringRedisTemplate</span><br><span class="line">      ((StringRedisConnection)connection).set(&quot;key&quot;, &quot;value&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h3><p>数据存仅Redis时需要进行序列化，取出来时进行反序列化。高层操作类template已封装。<br>org.springframework.data.redis.serializer</p>
+<ul>
+<li>基于RedisSerializer的双向序列化</li>
+<li>RedisElementReader和RedisElementWriter<br>两者的区别在于前者主要序列化为<code>byte[]</code>，而后者是<code>ByteBuffer</code><br>实现：</li>
+<li>JdkSerializationRedisSerializer，默认用于RedisCache和RedisTemplate</li>
+<li>StringRedisSerializer<br>note：默认情况下，RedisCche和RedisTemplate被配置成使用Java原生的序列化机制。安全性有了问题，推荐使用JSON格式<h4 id="Hash-mapping"><a href="#Hash-mapping" class="headerlink" title="Hash mapping"></a>Hash mapping</h4>理想情况下可使用JSON映射对象，key为属性名，value为属性值。现在提供Hash映射对象。把对象整个转化成Hash，再通过对Hash值的序列化达到这个对象存进Redis中<br>方法：</li>
+<li>直接映射，通过HashOperations和一个serializer</li>
+<li>通过Redis Repositories</li>
+<li>HashMapper和HashOperations<br>一下是第三种方法的例子<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">  String firstname;</span><br><span class="line">  String lastname;</span><br><span class="line"></span><br><span class="line">  // …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class HashMapping &#123;</span><br><span class="line"></span><br><span class="line">  @Autowired</span><br><span class="line">  HashOperations&lt;String, byte[], byte[]&gt; hashOperations;</span><br><span class="line"></span><br><span class="line">  HashMapper&lt;Object, byte[], byte[]&gt; mapper = new ObjectHashMapper();</span><br><span class="line"></span><br><span class="line">  public void writeHash(String key, Person person) &#123;</span><br><span class="line"></span><br><span class="line">    Map&lt;byte[], byte[]&gt; mappedHash = mapper.toHash(person);</span><br><span class="line">    hashOperations.putAll(key, mappedHash);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public Person loadHash(String key) &#123;</span><br><span class="line"></span><br><span class="line">    Map&lt;byte[], byte[]&gt; loadedHash = hashOperations.entries(&quot;key&quot;);</span><br><span class="line">    return (Person) mapper.fromHash(loadedHash);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>HashMapper提供map与对象的互相转换</p>
+<h3 id="Redis-Transactions"><a href="#Redis-Transactions" class="headerlink" title="Redis Transactions"></a>Redis Transactions</h3><p>Redis事务命令muti(开启), exec(执行)和discard(取消)<br>Redis不保证执行的所有操作都由同一连接完成。所以Spring-Data-提供SessionCallback接口使得可以使用同一连接执行多个操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//execute a transaction</span><br><span class="line">List&lt;Object&gt; txResults = redisTemplate.execute(new SessionCallback&lt;List&lt;Object&gt;&gt;() &#123;</span><br><span class="line">  public List&lt;Object&gt; execute(RedisOperations operations) throws DataAccessException &#123;</span><br><span class="line">    operations.multi();</span><br><span class="line">    operations.opsForSet().add(&quot;key&quot;, &quot;value1&quot;);</span><br><span class="line"></span><br><span class="line">    // This will contain the results of all operations in the transaction</span><br><span class="line">    return operations.exec();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">System.out.println(&quot;Number of items added to set: &quot; + txResults.get(0));</span><br></pre></td></tr></table></figure></p>
+<p>通过注解@EnableTransactionManagement在配置类上启用事务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableTransactionManagement            // 1                     </span><br><span class="line">public class RedisTxContextConfiguration &#123;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public StringRedisTemplate redisTemplate() &#123;</span><br><span class="line">    StringRedisTemplate template = new StringRedisTemplate(redisConnectionFactory());</span><br><span class="line">    // explicitly enable transaction support</span><br><span class="line">    template.setEnableTransactionSupport(true);    //  2        </span><br><span class="line">    return template;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public RedisConnectionFactory redisConnectionFactory() &#123;</span><br><span class="line">    // jedis || Lettuce</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public PlatformTransactionManager transactionManager() throws SQLException &#123;</span><br><span class="line">    return new DataSourceTransactionManager(dataSource());   //  3</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Bean</span><br><span class="line">  public DataSource dataSource() throws SQLException &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>setEnableTransactionSupport（true）为每个正在使用的RedisTemplate显式启用<br>这样做会强制将当前RedisConnection绑定到触发MULTI的当前Thread<br>如果事务完成且没有错误，则调用EXEC否则调用DISCARD<br>进入MULTI后，RedisConnection会对写入操作进行排队所有只读操作（如KEYS）都通过管道传输到一个新的（非线程绑定的）RedisConnection<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// must be performed on thread-bound connection</span><br><span class="line">template.opsForValue().set(&quot;thing1&quot;, &quot;thing2&quot;);</span><br><span class="line"></span><br><span class="line">// read operation must be executed on a free (not transaction-aware) connection</span><br><span class="line">template.keys(&quot;*&quot;);</span><br><span class="line"></span><br><span class="line">// returns null as values set within a transaction are not visible</span><br><span class="line">template.opsForValue().get(&quot;thing1&quot;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="Pipelining"><a href="#Pipelining" class="headerlink" title="Pipelining"></a>Pipelining</h3><p>发送多个命令不等待回复。最后一步读取回复<br>若关心结果可以Pipeling中运行RedisCallback或SessionCallback获取返回的结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//pop a specified number of items from a queue</span><br><span class="line">List&lt;Object&gt; results = stringRedisTemplate.executePipelined(</span><br><span class="line">  new RedisCallback&lt;Object&gt;() &#123;</span><br><span class="line">    public Object doInRedis(RedisConnection connection) throws DataAccessException &#123;</span><br><span class="line">      StringRedisConnection stringRedisConn = (StringRedisConnection)connection;</span><br><span class="line">      for(int i=0; i&lt; batchSize; i++) &#123;</span><br><span class="line">        stringRedisConn.rPop(&quot;myqueue&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">    return null;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这个值将被丢弃，返回值必须为null, 用于支持返回的结果<br>若不关心结果，则可以使用execute方法，为pipeline参数传递true</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记/" rel="tag"># 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/14/SpringMVC文档概述-异步请求/" rel="next" title="SpringMVC-文档搬运工 异步请求">
+                <i class="fa fa-chevron-left"></i> SpringMVC-文档搬运工 异步请求
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/14/JS随手记/" rel="prev" title="JS随手记">
+                JS随手记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Panzihua">
+            
+              <p class="site-author-name" itemprop="name">Panzihua</p>
+              <p class="site-description motion-element" itemprop="description">文章用于笔者复习与巩固,多是笔者从其他站点学习然后搬运、精简及加上个人见解</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成"><span class="nav-text">集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring-Data-Redis"><span class="nav-text">Spring Data Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用要求"><span class="nav-text">使用要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建连接"><span class="nav-text">创建连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置连接"><span class="nav-text">配置连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作类-RedisTemplate"><span class="nav-text">工作类 RedisTemplate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过回调Callback与RedisConnection直接对话"><span class="nav-text">通过回调Callback与RedisConnection直接对话</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#序列化"><span class="nav-text">序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash-mapping"><span class="nav-text">Hash mapping</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Transactions"><span class="nav-text">Redis Transactions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipelining"><span class="nav-text">Pipelining</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Panzihua</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

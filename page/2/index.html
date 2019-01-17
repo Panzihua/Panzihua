@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/29/Mybatis3.4.7-Mapper XML/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/29/Spring Boot集成Mybatis过程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Panzihua">
@@ -252,7 +252,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/29/Mybatis3.4.7-Mapper XML/" itemprop="url">Mybatis3.4.7 Mapper XML</a></h1>
+                <a class="post-title-link" href="/2018/11/29/Spring Boot集成Mybatis过程/" itemprop="url">Spring Boot集成Mybatis过程(简单Demo)</a></h1>
         
 
         <div class="post-meta">
@@ -304,14 +304,13 @@
       
         
           
-          简介Mapper XML文件主要用来放SQL映射语句，映射结果集格式ResultMap(定义容器与特定结果集如何属性与列对应上)
-父标签mappers属性namespace = “指定的dao层接口” 为Mapper.xml指定调用的它包含的映射语句和映射结果集的dao
-顶级元素
-cache 给命名
+          
+新建Spring Boot项目，勾选Mybatis支持
+application.properties添加相应配置(或者在手动在pom.xml添加依赖)12345&lt;dependency&gt;			&lt;groupId&gt;org.mybatis.spring.boot&lt;/group
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/11/29/Mybatis3.4.7-Mapper XML/#more" rel="contents">
+            <a class="btn" href="/2018/11/29/Spring Boot集成Mybatis过程/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -362,7 +361,7 @@ cache 给命名
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/29/Mybatis3.4.7-动态SQL/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/29/Mybatis3.4.7-configuration配置/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Panzihua">
@@ -381,7 +380,7 @@ cache 给命名
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/29/Mybatis3.4.7-动态SQL/" itemprop="url">Mybatis3.4.7 动态SQL(SQL的拼接)</a></h1>
+                <a class="post-title-link" href="/2018/11/29/Mybatis3.4.7-configuration配置/" itemprop="url">Mybatis3.4.7configuration配置文件</a></h1>
         
 
         <div class="post-meta">
@@ -433,15 +432,11 @@ cache 给命名
       
         
           
-          元素
-if
-choose(when, otherwise)
-trim(where, set)
-foreachif动态 SQL 通常要做的事情是根据条件包含 where 子句的一部分。比如：12345678&lt;select id=&quot;findActiveBlogWithTitleLike&
+          简介面向SQL语句的持久化层框架。与Hibernate不同，Hibernate是一款努力让开发者不需要写SQL的框架，基于实体映射，实体之间的关系反应在bean上，在遇到多表查询、复杂的关系映射时显得略为笨重。而Mybatis是让开发者更灵活的构建复杂SQL语句，实体类(或者叫简单的bean)只是数
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/11/29/Mybatis3.4.7-动态SQL/#more" rel="contents">
+            <a class="btn" href="/2018/11/29/Mybatis3.4.7-configuration配置/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

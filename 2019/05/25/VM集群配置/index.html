@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也">
+<meta name="keywords" content="笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VM集群配置">
+<meta property="og:url" content="http://yoursite.com/2019/05/25/VM集群配置/index.html">
+<meta property="og:site_name" content="Panzihua_Blog">
+<meta property="og:description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/vmware网络配置.png">
+<meta property="og:updated_time" content="2019-05-26T09:40:02.182Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VM集群配置">
+<meta name="twitter:description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也">
+<meta name="twitter:image" content="http://yoursite.com/images/vmware网络配置.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/25/VM集群配置/">
+
+
+
+
+
+  <title>VM集群配置 | Panzihua_Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Panzihua_Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/25/VM集群配置/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panzihua">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panzihua_Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VM集群配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-25T00:00:00+08:00">
+                2019-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本<code>xsync</code>，OpenJdk。<br>用户角色为root</p>
+<h2 id="软件工具"><a href="#软件工具" class="headerlink" title="软件工具"></a>软件工具</h2><p>Vmware，Centos7镜像，xshell，xftp</p>
+<h2 id="虚拟机安装"><a href="#虚拟机安装" class="headerlink" title="虚拟机安装"></a>虚拟机安装</h2><p>略。</p>
+<h2 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h2><p>Vmware顶部工具栏的编辑-&gt;虚拟网络编辑器-&gt;选择NAAT模式-&gt;NAT设置<br><img src="/images/vmware网络配置.png" alt=""><br>如图所示<br>当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也看查看该网络的详细情况)，其他信息稍后要配置到Centos7里的配置文件里面<br><code># vi /etc/sysconfig/network-scripts/ifcfg-ens33</code><br>修改网络配置，其中：</p>
+<ul>
+<li><code>BOOTPROTO</code>设为<code>static</code>，使用自己定义的IP地址</li>
+<li><code>ONBOOT</code>为<code>yes</code><br>添加：</li>
+<li><code>IPADDR=192.168.78.129</code>，设置固定IP地址</li>
+<li><code>GATEWAY=192.168.78.2</code> 设置图上的网管地址，或者可以在<code>/etc/sysconfig/network</code>中添加<code>NETWORKING=yes</code> <code>GATEWAY=192.168.78.1</code>以设置网关</li>
+<li><code>NETMASK=255.255.255.0</code> 子网掩码</li>
+<li><code>NM_CONTROLLED=no</code> 这个配置项值为<code>no</code>，代表不由网络控制器接口控制，而是便用配置文件<br>配置DNS：<br><code># echo nameserver 114.114.114.114 &gt; /etc/resolv.conf</code><br><code># service network start</code><br>使其生效<br>可以ping百度或者主机ping虚拟机看能否ping通，一般ping通了网络配置就没问题了<h2 id="配置集群的节点地址"><a href="#配置集群的节点地址" class="headerlink" title="配置集群的节点地址"></a>配置集群的节点地址</h2><code># vim /etc/hosts</code><br>添加设置好的每个节点的固定ip以及名称<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.78.129 node1</span><br><span class="line">192.168.78.130 node2</span><br><span class="line">192.168.78.131 node3</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>最好是英文后面+数字，因为后面的xsync分发脚本根据数字来循环<br>重启网络</p>
+<h2 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h2><p>centos7防火墙更名为firewalld<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># service firewalld status 查看防火墙状态  </span><br><span class="line"># service firewalld stop 关闭防火墙  </span><br><span class="line"># chkconfig firewalld --list 查看防火墙开机启动状态  </span><br><span class="line"># chkconfig firewalld off 关闭防火墙开机启动  </span><br><span class="line"># reboot 重启</span><br></pre></td></tr></table></figure></p>
+<h2 id="ssh免密登录"><a href="#ssh免密登录" class="headerlink" title="ssh免密登录"></a>ssh免密登录</h2><p><code># cd /etc/ssh</code><br><code># ssh-keygen -t rsa</code><br>生成密钥，若是其他用户则是进入到<code>~./ssh</code>目录底下<br><code># ssh-copy-id 目标地址</code><br>拷贝公钥到免密登录的目标节点上</p>
+<h2 id="JDK安装"><a href="#JDK安装" class="headerlink" title="JDK安装"></a>JDK安装</h2><p><code># yum search java | grep -i --color JDK</code><br>搜索可用版本<br>使用<code>yum</code>进行安装<br><code># yum install xxxx</code><br><code># yum install java-devel</code></p>
+<h2 id="同步脚本xsync"><a href="#同步脚本xsync" class="headerlink" title="同步脚本xsync"></a>同步脚本xsync</h2><p><code># yum install rsync</code><br>安装脚本基于的软件<br>在/usr/local/bin 目录下创建<code>xsync</code>文件，编辑:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line"># 获取输入参数个数，如果没有参数，直接退出</span><br><span class="line">pcount=$#</span><br><span class="line">if((pcount==0)); then</span><br><span class="line">        echo no args...;</span><br><span class="line">        exit;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># 获取文件名称</span><br><span class="line">p1=$1</span><br><span class="line">fname=`basename $p1`</span><br><span class="line">echo fname=$fname</span><br><span class="line"># 获取上级目录到绝对路径</span><br><span class="line">pdir=`cd -P $(dirname $p1); pwd`</span><br><span class="line">echo pdir=$pdir</span><br><span class="line"># 获取当前用户名称</span><br><span class="line">user=`whoami`</span><br><span class="line"># 循环</span><br><span class="line">for((host=1; host&lt;=2; host++)); do</span><br><span class="line">        echo $pdir/$fname $user@slave$host:$pdir</span><br><span class="line">        echo ==================slave$host==================</span><br><span class="line">        rsync -rvl $pdir/$fname $user@slave$host:$pdir</span><br><span class="line">done</span><br><span class="line">#Note:这里的slave对应/etc/hosts文件中的节点的名称host为后面接的数字，需要做相应修改。另外，for循环中的host的边界值由自己的主机编号决定</span><br></pre></td></tr></table></figure></p>
+<p>调用脚本<code># xsync.sh 目标文件</code><br>会同步到所有节点的同一目录下，目录若存在相同名字的文件亦会覆盖<br>笔者第一次同步时遇到连接询问，需要逐个输入yes，后面同步就不再需要了</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>至此集群搭建完毕，所需工具亦配置完善。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记/" rel="tag"># 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/17/CPU/" rel="next" title="CPU缓存">
+                <i class="fa fa-chevron-left"></i> CPU缓存
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Panzihua">
+            
+              <p class="site-author-name" itemprop="name">Panzihua</p>
+              <p class="site-description motion-element" itemprop="description">文章用于笔者复习与巩固,多是笔者从其他站点学习然后搬运、精简及加上个人见解</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件工具"><span class="nav-text">软件工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机安装"><span class="nav-text">虚拟机安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络配置"><span class="nav-text">网络配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置集群的节点地址"><span class="nav-text">配置集群的节点地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭防火墙"><span class="nav-text">关闭防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh免密登录"><span class="nav-text">ssh免密登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK安装"><span class="nav-text">JDK安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步脚本xsync"><span class="nav-text">同步脚本xsync</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结尾"><span class="nav-text">结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Panzihua</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

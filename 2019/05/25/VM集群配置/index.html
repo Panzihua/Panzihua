@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也">
+<meta name="description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也看">
 <meta name="keywords" content="笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VM集群配置">
 <meta property="og:url" content="http://yoursite.com/2019/05/25/VM集群配置/index.html">
 <meta property="og:site_name" content="Panzihua_Blog">
-<meta property="og:description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也">
+<meta property="og:description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也看">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/vmware网络配置.png">
-<meta property="og:updated_time" content="2019-05-26T09:40:02.182Z">
+<meta property="og:updated_time" content="2019-05-26T09:44:23.884Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="VM集群配置">
-<meta name="twitter:description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也">
+<meta name="twitter:description" content="简介集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本xsync，OpenJdk。用户角色为root 软件工具Vmware，Centos7镜像，xshell，xftp 虚拟机安装略。 网络配置Vmware顶部工具栏的编辑-&amp;gt;虚拟网络编辑器-&amp;gt;选择NAT模式-&amp;gt;NAT设置如图所示当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也看">
 <meta name="twitter:image" content="http://yoursite.com/images/vmware网络配置.png">
 
 
@@ -305,7 +305,7 @@
         <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>集群搭建(针对Centos7)。节点通信，网络配置(针对Vmware)，集群同步脚本<code>xsync</code>，OpenJdk。<br>用户角色为root</p>
 <h2 id="软件工具"><a href="#软件工具" class="headerlink" title="软件工具"></a>软件工具</h2><p>Vmware，Centos7镜像，xshell，xftp</p>
 <h2 id="虚拟机安装"><a href="#虚拟机安装" class="headerlink" title="虚拟机安装"></a>虚拟机安装</h2><p>略。</p>
-<h2 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h2><p>Vmware顶部工具栏的编辑-&gt;虚拟网络编辑器-&gt;选择NAAT模式-&gt;NAT设置<br><img src="/images/vmware网络配置.png" alt=""><br>如图所示<br>当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也看查看该网络的详细情况)，其他信息稍后要配置到Centos7里的配置文件里面<br><code># vi /etc/sysconfig/network-scripts/ifcfg-ens33</code><br>修改网络配置，其中：</p>
+<h2 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h2><p>Vmware顶部工具栏的编辑-&gt;虚拟网络编辑器-&gt;选择NAT模式-&gt;NAT设置<br><img src="/images/vmware网络配置.png" alt=""><br>如图所示<br>当前Vmware的NAT的网络名称叫vmnet8(通过win命令行也看查看该网络的详细情况)，其他信息稍后要配置到Centos7里的配置文件里面<br><code># vi /etc/sysconfig/network-scripts/ifcfg-ens33</code><br>修改网络配置，其中：</p>
 <ul>
 <li><code>BOOTPROTO</code>设为<code>static</code>，使用自己定义的IP地址</li>
 <li><code>ONBOOT</code>为<code>yes</code><br>添加：</li>
